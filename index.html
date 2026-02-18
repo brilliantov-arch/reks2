@@ -1,276 +1,258 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2487.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 16.0px Helvetica; -webkit-text-stroke: #000000}
-    span.s1 {font-kerning: none}
-    span.s2 {font: 16.0px 'Apple Color Emoji'; font-kerning: none}
-    span.s3 {font: 16.0px 'STIX Two Math'; font-kerning: none}
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Колесо Фортуны</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: white;
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            margin: 30px auto;
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 15px solid #fff;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            position: relative;
+        }
+
+        .arrow {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 50px solid #ff6b6b;
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+            z-index: 10;
+        }
+
+        .center-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            border: 5px solid white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+            color: white;
+            border: none;
+            padding: 20px 50px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+
+        button:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #result {
+            color: white;
+            font-size: 2em;
+            margin-top: 30px;
+            text-align: center;
+            min-height: 60px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 600px) {
+            .wheel-container {
+                width: 350px;
+                height: 350px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            button {
+                padding: 15px 35px;
+                font-size: 1.2em;
+            }
+        }
+    </style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt;</span></p>
-<p class="p1"><span class="s1">&lt;html lang="ru"&gt;</span></p>
-<p class="p1"><span class="s1">&lt;head&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;meta charset="UTF-8"&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;title&gt;Колесо Фортуны&lt;/title&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;style&gt;</span></p>
-<p class="p1"><span class="s1">        * {</span></p>
-<p class="p1"><span class="s1">            margin: 0;</span></p>
-<p class="p1"><span class="s1">            padding: 0;</span></p>
-<p class="p1"><span class="s1">            box-sizing: border-box;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        body {</span></p>
-<p class="p1"><span class="s1">            font-family: 'Arial', sans-serif;</span></p>
-<p class="p1"><span class="s1">            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);</span></p>
-<p class="p1"><span class="s1">            min-height: 100vh;</span></p>
-<p class="p1"><span class="s1">            display: flex;</span></p>
-<p class="p1"><span class="s1">            flex-direction: column;</span></p>
-<p class="p1"><span class="s1">            align-items: center;</span></p>
-<p class="p1"><span class="s1">            justify-content: center;</span></p>
-<p class="p1"><span class="s1">            padding: 20px;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        h1 {</span></p>
-<p class="p1"><span class="s1">            color: white;</span></p>
-<p class="p1"><span class="s1">            font-size: 3em;</span></p>
-<p class="p1"><span class="s1">            margin-bottom: 30px;</span></p>
-<p class="p1"><span class="s1">            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        .wheel-container {</span></p>
-<p class="p1"><span class="s1">            position: relative;</span></p>
-<p class="p1"><span class="s1">            width: 500px;</span></p>
-<p class="p1"><span class="s1">            height: 500px;</span></p>
-<p class="p1"><span class="s1">            margin: 30px auto;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        #wheel {</span></p>
-<p class="p1"><span class="s1">            width: 100%;</span></p>
-<p class="p1"><span class="s1">            height: 100%;</span></p>
-<p class="p1"><span class="s1">            border-radius: 50%;</span></p>
-<p class="p1"><span class="s1">            border: 15px solid #fff;</span></p>
-<p class="p1"><span class="s1">            box-shadow: 0 0 30px rgba(0,0,0,0.3);</span></p>
-<p class="p1"><span class="s1">            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);</span></p>
-<p class="p1"><span class="s1">            position: relative;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        .arrow {</span></p>
-<p class="p1"><span class="s1">            position: absolute;</span></p>
-<p class="p1"><span class="s1">            top: -40px;</span></p>
-<p class="p1"><span class="s1">            left: 50%;</span></p>
-<p class="p1"><span class="s1">            transform: translateX(-50%);</span></p>
-<p class="p1"><span class="s1">            width: 0;</span></p>
-<p class="p1"><span class="s1">            height: 0;</span></p>
-<p class="p1"><span class="s1">            border-left: 25px solid transparent;</span></p>
-<p class="p1"><span class="s1">            border-right: 25px solid transparent;</span></p>
-<p class="p1"><span class="s1">            border-top: 50px solid #ff6b6b;</span></p>
-<p class="p1"><span class="s1">            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));</span></p>
-<p class="p1"><span class="s1">            z-index: 10;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        .center-circle {</span></p>
-<p class="p1"><span class="s1">            position: absolute;</span></p>
-<p class="p1"><span class="s1">            top: 50%;</span></p>
-<p class="p1"><span class="s1">            left: 50%;</span></p>
-<p class="p1"><span class="s1">            transform: translate(-50%, -50%);</span></p>
-<p class="p1"><span class="s1">            width: 80px;</span></p>
-<p class="p1"><span class="s1">            height: 80px;</span></p>
-<p class="p1"><span class="s1">            background: linear-gradient(135deg, #ffd700, #ffed4e);</span></p>
-<p class="p1"><span class="s1">            border-radius: 50%;</span></p>
-<p class="p1"><span class="s1">            border: 5px solid white;</span></p>
-<p class="p1"><span class="s1">            box-shadow: 0 0 20px rgba(0,0,0,0.3);</span></p>
-<p class="p1"><span class="s1">            z-index: 5;</span></p>
-<p class="p1"><span class="s1">            display: flex;</span></p>
-<p class="p1"><span class="s1">            align-items: center;</span></p>
-<p class="p1"><span class="s1">            justify-content: center;</span></p>
-<p class="p1"><span class="s1">            font-weight: bold;</span></p>
-<p class="p1"><span class="s1">            color: #764ba2;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        button {</span></p>
-<p class="p1"><span class="s1">            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);</span></p>
-<p class="p1"><span class="s1">            color: white;</span></p>
-<p class="p1"><span class="s1">            border: none;</span></p>
-<p class="p1"><span class="s1">            padding: 20px 50px;</span></p>
-<p class="p1"><span class="s1">            font-size: 1.5em;</span></p>
-<p class="p1"><span class="s1">            border-radius: 50px;</span></p>
-<p class="p1"><span class="s1">            cursor: pointer;</span></p>
-<p class="p1"><span class="s1">            box-shadow: 0 5px 15px rgba(0,0,0,0.3);</span></p>
-<p class="p1"><span class="s1">            transition: all 0.3s;</span></p>
-<p class="p1"><span class="s1">            font-weight: bold;</span></p>
-<p class="p1"><span class="s1">            margin-top: 30px;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        button:hover:not(:disabled) {</span></p>
-<p class="p1"><span class="s1">            transform: translateY(-3px);</span></p>
-<p class="p1"><span class="s1">            box-shadow: 0 8px 20px rgba(0,0,0,0.4);</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        button:disabled {</span></p>
-<p class="p1"><span class="s1">            opacity: 0.6;</span></p>
-<p class="p1"><span class="s1">            cursor: not-allowed;</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        #result {</span></p>
-<p class="p1"><span class="s1">            color: white;</span></p>
-<p class="p1"><span class="s1">            font-size: 2em;</span></p>
-<p class="p1"><span class="s1">            margin-top: 30px;</span></p>
-<p class="p1"><span class="s1">            text-align: center;</span></p>
-<p class="p1"><span class="s1">            min-height: 60px;</span></p>
-<p class="p1"><span class="s1">            font-weight: bold;</span></p>
-<p class="p1"><span class="s1">            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        @media (max-width: 600px) {</span></p>
-<p class="p1"><span class="s1">            .wheel-container {</span></p>
-<p class="p1"><span class="s1">                width: 350px;</span></p>
-<p class="p1"><span class="s1">                height: 350px;</span></p>
-<p class="p1"><span class="s1">            }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            h1 {</span></p>
-<p class="p1"><span class="s1">                font-size: 2em;</span></p>
-<p class="p1"><span class="s1">            }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            button {</span></p>
-<p class="p1"><span class="s1">                padding: 15px 35px;</span></p>
-<p class="p1"><span class="s1">                font-size: 1.2em;</span></p>
-<p class="p1"><span class="s1">            }</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1">    &lt;/style&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/head&gt;</span></p>
-<p class="p1"><span class="s1">&lt;body&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;h1&gt;</span><span class="s2">🎰</span><span class="s1"> Колесо Фортуны </span><span class="s2">🎰</span><span class="s1">&lt;/h1&gt;</span></p>
-<p class="p1"><span class="s1">   </span></p>
-<p class="p1"><span class="s1">    &lt;div class="wheel-container"&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;div class="arrow"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;canvas id="wheel" width="500" height="500"&gt;&lt;/canvas&gt;</span></p>
-<p class="p1"><span class="s1">        &lt;div class="center-circle"&gt;SPIN&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">    &lt;button id="spinBtn" onclick="spin()"&gt;КРУТИТЬ КОЛЕСО&lt;/button&gt;</span></p>
-<p class="p1"><span class="s1">    &lt;div id="result"&gt;&lt;/div&gt;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">    &lt;script&gt;</span></p>
-<p class="p1"><span class="s1">        const prizes = [</span></p>
-<p class="p1"><span class="s1">            { text: '100</span><span class="s3">₽</span><span class="s1">', color: '#FF6B6B' },</span></p>
-<p class="p1"><span class="s1">            { text: '500</span><span class="s3">₽</span><span class="s1">', color: '#4ECDC4' },</span></p>
-<p class="p1"><span class="s1">            { text: '1000</span><span class="s3">₽</span><span class="s1">', color: '#FFE66D' },</span></p>
-<p class="p1"><span class="s1">            { text: 'Попробуй ещё', color: '#95E1D3' },</span></p>
-<p class="p1"><span class="s1">            { text: '5000</span><span class="s3">₽</span><span class="s1">', color: '#F38181' },</span></p>
-<p class="p1"><span class="s1">            { text: '200</span><span class="s3">₽</span><span class="s1">', color: '#AA96DA' },</span></p>
-<p class="p1"><span class="s1">            { text: 'Джекпот!', color: '#FCBAD3' },</span></p>
-<p class="p1"><span class="s1">            { text: '50</span><span class="s3">₽</span><span class="s1">', color: '#A8E6CF' }</span></p>
-<p class="p1"><span class="s1">        ];</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        const canvas = document.getElementById('wheel');</span></p>
-<p class="p1"><span class="s1">        const ctx = canvas.getContext('2d');</span></p>
-<p class="p1"><span class="s1">        const centerX = canvas.width / 2;</span></p>
-<p class="p1"><span class="s1">        const centerY = canvas.height / 2;</span></p>
-<p class="p1"><span class="s1">        const radius = canvas.width / 2 - 15;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        let currentRotation = 0;</span></p>
-<p class="p1"><span class="s1">        let isSpinning = false;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        function drawWheel() {</span></p>
-<p class="p1"><span class="s1">            const sliceAngle = (2 * Math.PI) / prizes.length;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            prizes.forEach((prize, index) =&gt; {</span></p>
-<p class="p1"><span class="s1">                const startAngle = index * sliceAngle + currentRotation;</span></p>
-<p class="p1"><span class="s1">                const endAngle = startAngle + sliceAngle;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">                // Рисуем сектор</span></p>
-<p class="p1"><span class="s1">                ctx.beginPath();</span></p>
-<p class="p1"><span class="s1">                ctx.moveTo(centerX, centerY);</span></p>
-<p class="p1"><span class="s1">                ctx.arc(centerX, centerY, radius, startAngle, endAngle);</span></p>
-<p class="p1"><span class="s1">                ctx.closePath();</span></p>
-<p class="p1"><span class="s1">                ctx.fillStyle = prize.color;</span></p>
-<p class="p1"><span class="s1">                ctx.fill();</span></p>
-<p class="p1"><span class="s1">                ctx.strokeStyle = '#fff';</span></p>
-<p class="p1"><span class="s1">                ctx.lineWidth = 3;</span></p>
-<p class="p1"><span class="s1">                ctx.stroke();</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">                // Рисуем текст</span></p>
-<p class="p1"><span class="s1">                ctx.save();</span></p>
-<p class="p1"><span class="s1">                ctx.translate(centerX, centerY);</span></p>
-<p class="p1"><span class="s1">                ctx.rotate(startAngle + sliceAngle / 2);</span></p>
-<p class="p1"><span class="s1">                ctx.textAlign = 'center';</span></p>
-<p class="p1"><span class="s1">                ctx.fillStyle = '#fff';</span></p>
-<p class="p1"><span class="s1">                ctx.font = 'bold 24px Arial';</span></p>
-<p class="p1"><span class="s1">                ctx.shadowColor = 'rgba(0,0,0,0.5)';</span></p>
-<p class="p1"><span class="s1">                ctx.shadowBlur = 3;</span></p>
-<p class="p1"><span class="s1">                ctx.fillText(prize.text, radius * 0.65, 10);</span></p>
-<p class="p1"><span class="s1">                ctx.restore();</span></p>
-<p class="p1"><span class="s1">            });</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        function spin() {</span></p>
-<p class="p1"><span class="s1">            if (isSpinning) return;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            isSpinning = true;</span></p>
-<p class="p1"><span class="s1">            document.getElementById('spinBtn').disabled = true;</span></p>
-<p class="p1"><span class="s1">            document.getElementById('result').textContent = '';</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            // Случайное количество оборотов (5-10 полных оборотов + случайный угол)</span></p>
-<p class="p1"><span class="s1">            const spins = 5 + Math.random() * 5;</span></p>
-<p class="p1"><span class="s1">            const extraDegrees = Math.random() * 360;</span></p>
-<p class="p1"><span class="s1">            const totalRotation = spins * 360 + extraDegrees;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            const finalRotation = currentRotation + (totalRotation * Math.PI / 180);</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            // Анимация вращения</span></p>
-<p class="p1"><span class="s1">            const duration = 5000;</span></p>
-<p class="p1"><span class="s1">            const startTime = Date.now();</span></p>
-<p class="p1"><span class="s1">            const startRotation = currentRotation;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            function animate() {</span></p>
-<p class="p1"><span class="s1">                const now = Date.now();</span></p>
-<p class="p1"><span class="s1">                const elapsed = now - startTime;</span></p>
-<p class="p1"><span class="s1">                const progress = Math.min(elapsed / duration, 1);</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">                // Easing функция</span></p>
-<p class="p1"><span class="s1">                const easeOut = 1 - Math.pow(1 - progress, 3);</span></p>
-<p class="p1"><span class="s1">                currentRotation = startRotation + (finalRotation - startRotation) * easeOut;</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">                ctx.clearRect(0, 0, canvas.width, canvas.height);</span></p>
-<p class="p1"><span class="s1">                drawWheel();</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">                if (progress &lt; 1) {</span></p>
-<p class="p1"><span class="s1">                    requestAnimationFrame(animate);</span></p>
-<p class="p1"><span class="s1">                } else {</span></p>
-<p class="p1"><span class="s1">                    currentRotation = finalRotation % (2 * Math.PI);</span></p>
-<p class="p1"><span class="s1">                    showResult();</span></p>
-<p class="p1"><span class="s1">                }</span></p>
-<p class="p1"><span class="s1">            }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            animate();</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        function showResult() {</span></p>
-<p class="p1"><span class="s1">            // Определяем выигрышный сектор</span></p>
-<p class="p1"><span class="s1">            const sliceAngle = (2 * Math.PI) / prizes.length;</span></p>
-<p class="p1"><span class="s1">            const normalizedRotation = (2 * Math.PI - (currentRotation % (2 * Math.PI))) % (2 * Math.PI);</span></p>
-<p class="p1"><span class="s1">            const winningIndex = Math.floor(normalizedRotation / sliceAngle) % prizes.length;</span></p>
-<p class="p1"><span class="s1">            const winningPrize = prizes[winningIndex];</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">            setTimeout(() =&gt; {</span></p>
-<p class="p1"><span class="s1">                document.getElementById('result').textContent = `</span><span class="s2">🎉</span><span class="s1"> Вы выиграли: ${winningPrize.text} </span><span class="s2">🎉</span><span class="s1">`;</span></p>
-<p class="p1"><span class="s1">                isSpinning = false;</span></p>
-<p class="p1"><span class="s1">                document.getElementById('spinBtn').disabled = false;</span></p>
-<p class="p1"><span class="s1">            }, 500);</span></p>
-<p class="p1"><span class="s1">        }</span></p>
-<p class="p1"><span class="s1"> </span></p>
-<p class="p1"><span class="s1">        // Первоначальная отрисовка колеса</span></p>
-<p class="p1"><span class="s1">        drawWheel();</span></p>
-<p class="p1"><span class="s1">    &lt;/script&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/body&gt;</span></p>
-<p class="p1"><span class="s1">&lt;/html&gt;</span></p>
+    <h1>🎰 Колесо Фортуны 🎰</h1>
+    
+    <div class="wheel-container">
+        <div class="arrow"></div>
+        <canvas id="wheel" width="500" height="500"></canvas>
+        <div class="center-circle">SPIN</div>
+    </div>
+
+    <button id="spinBtn" onclick="spin()">КРУТИТЬ КОЛЕСО</button>
+    <div id="result"></div>
+
+    <script>
+        const prizes = [
+            { text: '100₽', color: '#FF6B6B' },
+            { text: '500₽', color: '#4ECDC4' },
+            { text: '1000₽', color: '#FFE66D' },
+            { text: 'Попробуй ещё', color: '#95E1D3' },
+            { text: '5000₽', color: '#F38181' },
+            { text: '200₽', color: '#AA96DA' },
+            { text: 'Джекпот!', color: '#FCBAD3' },
+            { text: '50₽', color: '#A8E6CF' }
+        ];
+
+        const canvas = document.getElementById('wheel');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = canvas.width / 2 - 15;
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function drawWheel() {
+            const sliceAngle = (2 * Math.PI) / prizes.length;
+
+            prizes.forEach((prize, index) => {
+                const startAngle = index * sliceAngle + currentRotation;
+                const endAngle = startAngle + sliceAngle;
+
+                // Рисуем сектор
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = prize.color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Рисуем текст
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = 'center';
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 24px Arial';
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 3;
+                ctx.fillText(prize.text, radius * 0.65, 10);
+                ctx.restore();
+            });
+        }
+
+        function spin() {
+            if (isSpinning) return;
+
+            isSpinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            document.getElementById('result').textContent = '';
+
+            // Случайное количество оборотов (5-10 полных оборотов + случайный угол)
+            const spins = 5 + Math.random() * 5;
+            const extraDegrees = Math.random() * 360;
+            const totalRotation = spins * 360 + extraDegrees;
+
+            const finalRotation = currentRotation + (totalRotation * Math.PI / 180);
+
+            // Анимация вращения
+            const duration = 5000;
+            const startTime = Date.now();
+            const startRotation = currentRotation;
+
+            function animate() {
+                const now = Date.now();
+                const elapsed = now - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                // Easing функция
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                currentRotation = startRotation + (finalRotation - startRotation) * easeOut;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawWheel();
+
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    currentRotation = finalRotation % (2 * Math.PI);
+                    showResult();
+                }
+            }
+
+            animate();
+        }
+
+        function showResult() {
+            // Определяем выигрышный сектор
+            const sliceAngle = (2 * Math.PI) / prizes.length;
+            const normalizedRotation = (2 * Math.PI - (currentRotation % (2 * Math.PI))) % (2 * Math.PI);
+            const winningIndex = Math.floor(normalizedRotation / sliceAngle) % prizes.length;
+            const winningPrize = prizes[winningIndex];
+
+            setTimeout(() => {
+                document.getElementById('result').textContent = `🎉 Вы выиграли: ${winningPrize.text} 🎉`;
+                isSpinning = false;
+                document.getElementById('spinBtn').disabled = false;
+            }, 500);
+        }
+
+        // Первоначальная отрисовка колеса
+        drawWheel();
+    </script>
 </body>
 </html>
