@@ -632,11 +632,1110 @@ body {
   box-shadow: 0 0 8px gold;
 }
 
+/* ── MATCHMAKING OVERLAY ── */
+#overlay-matchmaking {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, #0c1f3a 0%, #091626 40%, #0a1f14 100%);
+}
+
+.mm-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 520px;
+  padding: 0 24px;
+}
+
+.mm-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+
+/* Players row */
+.mm-players {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+/* Avatar base */
+.mm-avatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.mm-avatar-pic {
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,180,0,0.5);
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255,150,0,0.2);
+}
+
+.mm-avatar-pic::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+}
+
+.mm-avatar-name {
+  font-size: 15px;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  max-width: 100px;
+}
+
+.mm-avatar-rating {
+  font-size: 12px;
+  color: #FFB700;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* VS divider */
+.mm-vs-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+}
+
+.mm-vs {
+  font-family: 'Russo One', sans-serif;
+  font-size: 22px;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 2px;
+}
+
+/* Searching spinner */
+.mm-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.mm-dots {
+  display: flex; gap: 7px;
+}
+
+.mm-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #FFB700;
+  animation: mmDotBounce 1.2s ease-in-out infinite;
+}
+.mm-dot:nth-child(2) { animation-delay: 0.2s; background: #FF8C00; }
+.mm-dot:nth-child(3) { animation-delay: 0.4s; background: #E040FB; }
+
+@keyframes mmDotBounce {
+  0%,100% { transform: translateY(0); opacity: 0.4; }
+  50% { transform: translateY(-8px); opacity: 1; }
+}
+
+.mm-search-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: rgba(255,255,255,0.35);
+  text-transform: uppercase;
+}
+
+/* Enemy avatar — scanning state */
+.mm-avatar.enemy .mm-avatar-pic {
+  background: rgba(0,0,0,0.6);
+  border-color: rgba(255,255,255,0.15);
+  animation: mmScan 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes mmScan {
+  from { box-shadow: 0 0 10px rgba(255,150,0,0.1); }
+  to   { box-shadow: 0 0 30px rgba(255,150,0,0.4), 0 0 60px rgba(255,100,0,0.15); }
+}
+
+.mm-avatar.enemy.found .mm-avatar-pic {
+  border-color: rgba(233,30,140,0.8);
+  animation: mmFound 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  box-shadow: 0 0 30px rgba(233,30,140,0.6);
+}
+
+@keyframes mmFound {
+  0%   { transform: scale(0.5); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+.mm-avatar.enemy.found .mm-avatar-name,
+.mm-avatar.enemy.found .mm-avatar-rating {
+  animation: fadeSlideUp 0.4s ease 0.15s both;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Candidates carousel */
+.mm-candidates {
+  font-size: 13px; font-weight: 700;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 1px;
+  height: 18px;
+  overflow: hidden;
+  text-align: center;
+  min-width: 120px;
+}
+
+/* Progress bar */
+.mm-progress-wrap {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.mm-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #FFB700, #E040FB);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+.mm-found-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #4AFF80;
+  letter-spacing: 2px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.mm-found-label.show { opacity: 1; }
+
+/* START button */
+.mm-start-btn {
+  padding: 16px 64px;
+  background: linear-gradient(180deg, #FFB700 0%, #E08000 100%);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 6px 0 #7A4000, 0 10px 24px rgba(255,150,0,0.4);
+  letter-spacing: 1px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s;
+  pointer-events: none;
+}
+
+.mm-start-btn.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.mm-start-btn:hover { filter: brightness(1.1); }
+.mm-start-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #7A4000; }
+
+/* ── PARTNER WIDGET in stage bar ── */
+.partner-widget {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(233,30,140,0.35);
+  border-radius: 12px;
+  padding: 7px 14px 7px 8px;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+}
+
+.partner-widget::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(233,30,140,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.partner-pic {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(233,30,140,0.6);
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(233,30,140,0.4);
+}
+
+.partner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.partner-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.partner-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.partner-score {
+  font-size: 11px;
+  color: #FFB700;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 3px;
+}
+
+.partner-status {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #4AFF80;
+  box-shadow: 0 0 6px #4AFF80;
+  flex-shrink: 0;
+  animation: statusPulse 2s ease-in-out infinite;
+}
+
+@keyframes statusPulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ── REPLAY LINK in win card ── */
+.replay-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.2s, border-color 0.2s;
+  text-decoration: none;
+  margin-top: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.replay-link:hover {
+  background: rgba(233,30,140,0.12);
+  border-color: rgba(233,30,140,0.4);
+}
+
+.replay-link:hover .replay-arrow { transform: translateX(3px); }
+
+.replay-link::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(233,30,140,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.replay-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(233,30,140,0.2);
+  border: 2px solid rgba(233,30,140,0.5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.replay-text {
+  flex: 1;
+  text-align: left;
+}
+
+.replay-caption {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 3px;
+}
+
+.replay-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.replay-meta {
+  font-size: 11px;
+  color: #FFB700;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+.replay-play-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: linear-gradient(135deg, rgba(233,30,140,0.7), rgba(180,10,100,0.7));
+  border-radius: 8px;
+  padding: 6px 10px;
+  flex-shrink: 0;
+}
+
+.replay-play-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.replay-play-label {
+  font-size: 11px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.replay-arrow {
+  font-size: 14px;
+  color: rgba(255,255,255,0.3);
+  transition: transform 0.2s;
+}
+
+/* Replay mini-modal */
+.replay-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 300;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+}
+
+.replay-modal.show { display: flex; }
+
+.replay-modal-card {
+  background: linear-gradient(180deg, #1a2a3a, #0f1a24);
+  border: 2px solid rgba(233,30,140,0.4);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  width: 100%;
+  max-width: 420px;
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.replay-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.replay-modal-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: rgba(233,30,140,0.2);
+  border: 2px solid rgba(233,30,140,0.6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 0 14px rgba(233,30,140,0.4);
+}
+
+.replay-modal-info { flex: 1; }
+.replay-modal-name {
+  font-size: 17px; font-weight: 900; color: #fff; line-height: 1.2;
+}
+.replay-modal-sub {
+  font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 1px;
+}
+
+.replay-modal-close {
+  width: 30px; height: 30px;
+  background: rgba(255,255,255,0.08);
+  border: none; border-radius: 50%;
+  color: rgba(255,255,255,0.5);
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+
+.replay-modal-close:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+/* Mini replay board */
+.replay-board-wrap {
+  background: rgba(0,0,0,0.4);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.replay-board-title {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 10px; text-align: center;
+}
+
+.replay-mini-board {
+  display: grid;
+  gap: 3px;
+  margin: 0 auto;
+  width: fit-content;
+}
+
+.replay-mini-cell {
+  width: 44px; height: 44px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 3px;
+}
+
+.replay-mini-block {
+  position: absolute;
+  border-radius: 5px;
+  transition: left 0.35s ease, top 0.35s ease;
+}
+
+.replay-mini-block.wood {
+  background: linear-gradient(135deg, #FFD060, #D08010);
+  box-shadow: inset 0 2px 0 rgba(255,240,120,0.5), 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.replay-mini-block.player {
+  background: linear-gradient(135deg, #E040FB, #B020D0);
+  box-shadow: 0 0 10px rgba(200,0,255,0.5), inset 0 2px 0 rgba(255,150,255,0.4);
+}
+
+.replay-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.replay-ctrl-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  width: 38px; height: 38px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+
+.replay-ctrl-btn:hover { background: rgba(255,255,255,0.15); }
+.replay-ctrl-btn:disabled { opacity: 0.3; cursor: default; }
+
+.replay-step-info {
+  font-size: 13px; font-weight: 800;
+  color: rgba(255,255,255,0.5);
+  min-width: 80px; text-align: center;
+}
+
+.replay-step-info strong { color: #FFB700; }
+
+.replay-stats-row {
+  display: flex; gap: 10px;
+}
+
+.replay-stat {
+  flex: 1;
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.replay-stat-val {
+  font-family: 'Russo One', sans-serif;
+  font-size: 20px;
+  color: #FFE040;
+  line-height: 1;
+}
+
+.replay-stat-label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── RULES MODAL ── */
+.rules-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 400;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(6px);
+  padding: 16px;
+}
+.rules-modal.show { display: flex; }
+
+.rules-card {
+  background: linear-gradient(170deg, #162438 0%, #0e1c10 100%);
+  border: 2px solid rgba(255,183,0,0.35);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  scrollbar-width: none;
+}
+.rules-card::-webkit-scrollbar { display: none; }
+
+.rules-header {
+  position: sticky; top: 0;
+  background: #162438;
+  border-bottom: 1px solid rgba(255,183,0,0.2);
+  display: flex; align-items: center; gap: 12px;
+  padding: 18px 20px 14px;
+  border-radius: 20px 20px 0 0;
+  z-index: 1;
+}
+.rules-header-icon { font-size: 32px; filter: drop-shadow(0 0 10px rgba(255,183,0,0.5)); }
+.rules-header-text { flex: 1; }
+.rules-header-title {
+  font-family: 'Russo One', sans-serif; font-size: 18px;
+  background: linear-gradient(90deg, #FFE040, #FF8C00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  line-height: 1.2;
+}
+.rules-header-sub {
+  font-size: 11px; color: rgba(255,255,255,0.35); font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; margin-top: 2px;
+}
+.rules-close {
+  width: 32px; height: 32px; background: rgba(255,255,255,0.07);
+  border: none; border-radius: 50%; color: rgba(255,255,255,0.5);
+  font-size: 16px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.rules-close:hover { background: rgba(255,100,0,0.3); color: #fff; }
+
+.rules-body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+.rules-goal {
+  background: linear-gradient(135deg, rgba(255,183,0,0.12), rgba(255,100,0,0.08));
+  border: 1px solid rgba(255,183,0,0.25); border-radius: 12px;
+  padding: 14px 16px; display: flex; align-items: center; gap: 14px;
+}
+.rules-goal-icon { font-size: 36px; flex-shrink: 0; }
+.rules-goal-text { font-size: 14px; color: rgba(255,255,255,0.85); font-weight: 700; line-height: 1.5; }
+.rules-goal-text strong { color: #FFE040; }
+
+.rules-section { display: flex; flex-direction: column; gap: 8px; }
+.rules-section-title {
+  font-size: 11px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,183,0,0.7);
+  display: flex; align-items: center; gap: 8px;
+}
+.rules-section-title::after {
+  content: ''; flex: 1; height: 1px; background: rgba(255,183,0,0.15);
+}
+
+.rules-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  background: rgba(255,255,255,0.03); border-radius: 10px;
+  padding: 11px 13px; border: 1px solid rgba(255,255,255,0.06);
+}
+.rules-item-num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: linear-gradient(135deg, rgba(255,183,0,0.3), rgba(255,100,0,0.3));
+  border: 1px solid rgba(255,183,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: #FFB700;
+  flex-shrink: 0; margin-top: 1px;
+}
+.rules-item-ico { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.rules-item-body { flex: 1; }
+.rules-item-title { font-size: 14px; font-weight: 900; color: #fff; line-height: 1.3; margin-bottom: 3px; }
+.rules-item-desc { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 600; line-height: 1.5; }
+
+.rules-timer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.rules-timer-cell {
+  background: rgba(0,0,0,0.3); border-radius: 10px;
+  padding: 10px 12px; text-align: center;
+  border: 1px solid rgba(255,255,255,0.07);
+  position: relative; overflow: hidden;
+}
+.rules-timer-cell::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--accent, rgba(255,183,0,0.5));
+}
+.rules-timer-time { font-family: 'Russo One', sans-serif; font-size: 20px; line-height: 1; margin-bottom: 3px; }
+.rules-timer-label { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 700; }
+.rules-timer-prize { font-size: 13px; font-weight: 900; margin-top: 4px; }
+
+.rules-penalty {
+  background: rgba(255,60,60,0.07); border: 1px solid rgba(255,60,60,0.2);
+  border-radius: 10px; padding: 11px 14px;
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: rgba(255,255,255,0.7); font-weight: 700;
+}
+.rules-penalty-ico { font-size: 22px; flex-shrink: 0; }
+.rules-penalty strong { color: #FF6060; }
+
+.rules-prize-row {
+  display: flex; gap: 8px;
+}
+.rules-prize-cell {
+  flex: 1; border-radius: 10px; padding: 12px 10px; text-align: center;
+  background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.07);
+  position: relative; overflow: hidden;
+}
+.rules-prize-medal { font-size: 24px; line-height: 1; margin-bottom: 4px; }
+.rules-prize-place { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+.rules-prize-val { font-family: 'Russo One', sans-serif; font-size: 16px; margin-top: 4px; }
+
+.rules-cta {
+  background: linear-gradient(180deg, #FFB700, #E08000);
+  border: none; border-radius: 12px; padding: 14px;
+  color: #fff; font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 900; cursor: pointer;
+  box-shadow: 0 4px 0 #7A4000, 0 6px 16px rgba(255,150,0,0.3);
+  transition: filter 0.15s, transform 0.1s; width: 100%;
+}
+.rules-cta:hover { filter: brightness(1.1); }
+.rules-cta:active { transform: translateY(2px); box-shadow: 0 2px 0 #7A4000; }
+
+@keyframes timerPulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.08); }
+}
+
+
+/* ── PLAYER MOVES BLOCK ── */
+.player-moves-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 8px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,183,0,0.2);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+.player-moves-ico { font-size: 15px; }
+.player-moves-label { font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 1px; }
+.player-moves-val {
+  font-family: 'Russo One', sans-serif;
+  font-size: 18px;
+  color: #FFB700;
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ── OUT OF MOVES MODAL ── */
+.outofmoves-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 500;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  padding: 16px;
+}
+.outofmoves-modal.show { display: flex; }
+
+.outofmoves-card {
+  background: linear-gradient(170deg, #1a1020, #0e0818);
+  border: 2px solid rgba(233,30,140,0.4);
+  border-radius: 20px;
+  padding: 32px 28px 28px;
+  width: 100%; max-width: 360px;
+  text-align: center;
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+.outofmoves-icon { font-size: 52px; margin-bottom: 12px; }
+.outofmoves-title {
+  font-family: 'Russo One', sans-serif; font-size: 22px;
+  color: #fff; margin-bottom: 8px; line-height: 1.2;
+}
+.outofmoves-sub {
+  font-size: 13px; color: rgba(255,255,255,0.5); font-weight: 700;
+  line-height: 1.6; margin-bottom: 20px;
+}
+.outofmoves-sub strong { color: #E91E8C; }
+.outofmoves-btns { display: flex; flex-direction: column; gap: 10px; }
+.outofmoves-btn-buy {
+  padding: 14px;
+  background: linear-gradient(180deg, #FFB700, #E08000);
+  border: none; border-radius: 12px;
+  color: #fff; font-family: 'Nunito', sans-serif;
+  font-size: 16px; font-weight: 900; cursor: pointer;
+  box-shadow: 0 4px 0 #7A4000;
+  transition: filter 0.15s, transform 0.1s;
+}
+.outofmoves-btn-buy:hover { filter: brightness(1.1); }
+.outofmoves-btn-buy:active { transform: translateY(2px); box-shadow: 0 2px 0 #7A4000; }
+.outofmoves-btn-reset {
+  padding: 11px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  color: rgba(255,255,255,0.6);
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 800;
+  cursor: pointer; transition: background 0.2s;
+}
+.outofmoves-btn-reset:hover { background: rgba(255,255,255,0.12); }
+
+/* ── BUY MOVES MODAL ── */
+.buymoves-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 510;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(6px);
+  padding: 16px;
+}
+.buymoves-modal.show { display: flex; }
+
+.buymoves-card {
+  background: linear-gradient(170deg, #162438, #0e1820);
+  border: 2px solid rgba(255,183,0,0.35);
+  border-radius: 20px;
+  padding: 28px 24px 24px;
+  width: 100%; max-width: 380px;
+  animation: popIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.buymoves-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 20px;
+}
+.buymoves-header-icon { font-size: 28px; }
+.buymoves-header-title {
+  font-family: 'Russo One', sans-serif; font-size: 18px;
+  background: linear-gradient(90deg, #FFE040, #FF8C00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  flex: 1;
+}
+.buymoves-close {
+  width: 30px; height: 30px; background: rgba(255,255,255,0.07);
+  border: none; border-radius: 50%; color: rgba(255,255,255,0.5);
+  font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.buymoves-close:hover { background: rgba(255,100,0,0.3); color: #fff; }
+
+.buymoves-balance {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,183,0,0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.buymoves-balance-label { font-size: 12px; color: rgba(255,255,255,0.4); font-weight: 700; letter-spacing: 1px; }
+.buymoves-balance-val { font-family: 'Russo One', sans-serif; font-size: 18px; color: #FFB700; }
+
+.buymoves-options { display: flex; flex-direction: column; gap: 10px; }
+
+.buymoves-option {
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.1s;
+  position: relative; overflow: hidden;
+}
+.buymoves-option:hover {
+  background: rgba(255,183,0,0.08);
+  border-color: rgba(255,183,0,0.35);
+}
+.buymoves-option:active { transform: scale(0.98); }
+.buymoves-option.best-value {
+  border-color: rgba(233,30,140,0.4);
+  background: rgba(233,30,140,0.06);
+}
+
+.buymoves-option-badge {
+  position: absolute; top: 8px; right: 12px;
+  font-size: 10px; font-weight: 900;
+  background: linear-gradient(135deg, #E91E8C, #C0106B);
+  color: #fff; padding: 2px 8px; border-radius: 20px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+
+.buymoves-option-ico {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,183,0,0.2), rgba(255,100,0,0.15));
+  border: 1px solid rgba(255,183,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.buymoves-option-body { flex: 1; }
+.buymoves-option-moves {
+  font-family: 'Russo One', sans-serif; font-size: 20px;
+  color: #fff; line-height: 1;
+}
+.buymoves-option-label {
+  font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase; margin-top: 2px;
+}
+.buymoves-option-price {
+  background: linear-gradient(180deg, #FFB700, #E08000);
+  border: none; border-radius: 8px;
+  padding: 8px 14px; color: #fff;
+  font-family: 'Nunito', sans-serif; font-size: 14px; font-weight: 900;
+  cursor: pointer; flex-shrink: 0;
+  box-shadow: 0 3px 0 #7A4000;
+  transition: filter 0.15s, transform 0.1s;
+}
+.buymoves-option-price:hover { filter: brightness(1.1); }
+.buymoves-option-price:active { transform: translateY(2px); box-shadow: 0 1px 0 #7A4000; }
+
+.buymoves-footer {
+  margin-top: 14px;
+  font-size: 11px; color: rgba(255,255,255,0.25);
+  text-align: center; font-weight: 700; letter-spacing: 1px;
+}
+
+@keyframes movesAdded {
+  0%   { transform: scale(1); color: #FFB700; }
+  40%  { transform: scale(1.4); color: #4AFF80; }
+  100% { transform: scale(1); color: #FFB700; }
+}
 </style>
 </head>
 <body>
 
 <div class="bg"></div>
+
+<!-- ══ RULES MODAL ══ -->
+<div class="rules-modal" id="rules-modal">
+  <div class="rules-card">
+
+    <div class="rules-header">
+      <div class="rules-header-icon">🏆</div>
+      <div class="rules-header-text">
+        <div class="rules-header-title">Правила и призы</div>
+        <div class="rules-header-sub">Parking Escape · На время</div>
+      </div>
+      <button class="rules-close" onclick="closeRules()">✕</button>
+    </div>
+
+    <div class="rules-body">
+
+      <!-- ЦЕЛЬ -->
+      <div class="rules-goal">
+        <div class="rules-goal-icon">🚗</div>
+        <div class="rules-goal-text">
+          Выведи <strong>красный блок</strong> с поля через выход справа, сдвигая другие блоки с пути. Побеждает тот, кто справится <strong>быстрее</strong> и <strong>за меньшее число ходов</strong>.
+        </div>
+      </div>
+
+      <!-- КАК ИГРАТЬ -->
+      <div class="rules-section">
+        <div class="rules-section-title">Как играть</div>
+
+        <div class="rules-item">
+          <div class="rules-item-num">1</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Двигай блоки</div>
+            <div class="rules-item-desc">Тяни блоки пальцем или мышью — горизонтальные только влево/вправо, вертикальные только вверх/вниз.</div>
+          </div>
+        </div>
+
+        <div class="rules-item">
+          <div class="rules-item-num">2</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Освободи путь</div>
+            <div class="rules-item-desc">Блоки не могут проходить сквозь друг друга. Продумывай цепочку ходов заранее.</div>
+          </div>
+        </div>
+
+        <div class="rules-item">
+          <div class="rules-item-num">3</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Выведи красный блок</div>
+            <div class="rules-item-desc">Как только красный блок добирается до правого края — уровень засчитан. Таймер останавливается.</div>
+          </div>
+        </div>
+
+        <div class="rules-item">
+          <div class="rules-item-num">4</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Пройди все 4 уровня</div>
+            <div class="rules-item-desc">Испытание состоит из 4 этапов нарастающей сложности. Итоговый результат — сумма времени по всем этапам.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ЛИМИТ ХОДОВ -->
+      <div class="rules-section">
+        <div class="rules-section-title">Лимит ходов и время</div>
+
+        <div class="rules-timer-grid">
+          <div class="rules-timer-cell" style="--accent: rgba(74,255,128,0.6)">
+            <div class="rules-timer-time" style="color:#4AFF80">≤ 5</div>
+            <div class="rules-timer-label">ходов</div>
+            <div class="rules-timer-prize" style="color:#4AFF80">⭐⭐⭐</div>
+          </div>
+          <div class="rules-timer-cell" style="--accent: rgba(255,220,0,0.6)">
+            <div class="rules-timer-time" style="color:#FFE040">≤ 10</div>
+            <div class="rules-timer-label">ходов</div>
+            <div class="rules-timer-prize" style="color:#FFE040">⭐⭐</div>
+          </div>
+          <div class="rules-timer-cell" style="--accent: rgba(255,140,0,0.5)">
+            <div class="rules-timer-time" style="color:#FF8C00">≤ 15</div>
+            <div class="rules-timer-label">ходов</div>
+            <div class="rules-timer-prize" style="color:#FF8C00">⭐</div>
+          </div>
+          <div class="rules-timer-cell" style="--accent: rgba(255,255,255,0.1)">
+            <div class="rules-timer-time" style="color:rgba(255,255,255,0.35)">&gt; 15</div>
+            <div class="rules-timer-label">ходов</div>
+            <div class="rules-timer-prize" style="color:rgba(255,255,255,0.3)">без звёзд</div>
+          </div>
+        </div>
+
+        <div class="rules-penalty">
+          <div class="rules-penalty-ico">⏱️</div>
+          <div>Каждый лишний ход сверх минимума прибавляет <strong>+3 секунды</strong> к итоговому времени.</div>
+        </div>
+      </div>
+
+      <!-- ПРИЗЫ -->
+      <div class="rules-section">
+        <div class="rules-section-title">Призовые места</div>
+
+        <div class="rules-prize-row">
+          <div class="rules-prize-cell" style="border-color:rgba(255,215,0,0.3); background:rgba(255,215,0,0.07)">
+            <div class="rules-prize-medal">🥇</div>
+            <div class="rules-prize-place">1 место</div>
+            <div class="rules-prize-val" style="color:#FFD700">500 ФМ</div>
+          </div>
+          <div class="rules-prize-cell" style="border-color:rgba(192,192,192,0.3); background:rgba(192,192,192,0.05)">
+            <div class="rules-prize-medal">🥈</div>
+            <div class="rules-prize-place">2 место</div>
+            <div class="rules-prize-val" style="color:#C0C0C0">200 ФМ</div>
+          </div>
+          <div class="rules-prize-cell" style="border-color:rgba(205,127,50,0.3); background:rgba(205,127,50,0.05)">
+            <div class="rules-prize-medal">🥉</div>
+            <div class="rules-prize-place">3 место</div>
+            <div class="rules-prize-val" style="color:#CD7F32">100 ФМ</div>
+          </div>
+        </div>
+
+        <div class="rules-item">
+          <div class="rules-item-ico">🎁</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Бонус за все ⭐⭐⭐</div>
+            <div class="rules-item-desc">Пройди все 4 уровня с тремя звёздами — получи дополнительно <strong style="color:#FFE040">+150 ФМ</strong> и эксклюзивный значок «Мастер парковки».</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ФИНАЛ -->
+      <div class="rules-section">
+        <div class="rules-section-title">Финал испытания</div>
+        <div class="rules-item">
+          <div class="rules-item-ico">⏰</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Итоги через 2 дня</div>
+            <div class="rules-item-desc">Результаты финала подводятся по истечению таймера. Рейтинг формируется по суммарному времени прохождения всех этапов — чем меньше, тем выше место.</div>
+          </div>
+        </div>
+        <div class="rules-item">
+          <div class="rules-item-ico">🔄</div>
+          <div class="rules-item-body">
+            <div class="rules-item-title">Можно переиграть</div>
+            <div class="rules-item-desc">Засчитывается лучший результат из всех попыток до окончания финала.</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="rules-cta" onclick="closeRules()">Понятно, играть! 🚗</button>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MATCHMAKING OVERLAY ══ -->
+<div id="overlay-matchmaking">
+  <div class="mm-card">
+    <div class="mm-title">Поиск соперника</div>
+
+    <div class="mm-players">
+      <!-- YOU -->
+      <div class="mm-avatar">
+        <div class="mm-avatar-pic">🧑</div>
+        <div class="mm-avatar-name">Вы</div>
+        <div class="mm-avatar-rating">⭐ 1 420</div>
+      </div>
+
+      <!-- CENTER -->
+      <div class="mm-vs-area">
+        <div class="mm-vs">VS</div>
+        <div class="mm-spinner" id="mm-spinner">
+          <div class="mm-dots">
+            <div class="mm-dot"></div>
+            <div class="mm-dot"></div>
+            <div class="mm-dot"></div>
+          </div>
+          <div class="mm-candidates" id="mm-candidates">Поиск...</div>
+        </div>
+        <div class="mm-found-label" id="mm-found-label">✓ НАЙДЕН!</div>
+      </div>
+
+      <!-- ENEMY -->
+      <div class="mm-avatar enemy" id="mm-enemy">
+        <div class="mm-avatar-pic" id="mm-enemy-pic">❓</div>
+        <div class="mm-avatar-name" id="mm-enemy-name">—</div>
+        <div class="mm-avatar-rating" id="mm-enemy-rating" style="opacity:0">⭐ —</div>
+      </div>
+    </div>
+
+    <div class="mm-progress-wrap">
+      <div class="mm-progress-bar" id="mm-progress"></div>
+    </div>
+
+    <button class="mm-start-btn" id="mm-start-btn" onclick="startFromMatchmaking()">
+      ⚔️ Начать игру!
+    </button>
+  </div>
+</div>
 
 <!-- Leaf decorations -->
 <div class="leaves-left">
@@ -673,7 +1772,7 @@ body {
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="top-left">
-    <div class="top-btn"><span class="ico">🏆</span> Правила и призы</div>
+    <div class="top-btn" onclick="openRules()"><span class="ico">🏆</span> Правила и призы</div>
     <div class="top-btn"><span class="ico">💬</span> Отзывы</div>
   </div>
   <div class="top-center">
@@ -699,7 +1798,18 @@ body {
     <div class="step-line" id="line-3"></div>
     <div class="step" id="step-4"><span class="step-gift">🎁</span></div>
   </div>
-  <button class="surrender-btn" onclick="resetLevel()"><span class="flag">⚑</span> Сдаться</button>
+  <button class="surrender-btn" style="display:none" onclick="resetLevel()"><span class="flag">⚑</span> Сдаться</button>
+
+  <!-- PARTNER WIDGET -->
+  <div class="partner-widget" id="partner-widget">
+    <div class="partner-pic" id="partner-pic">🧑</div>
+    <div class="partner-info">
+      <div class="partner-label">Соперник</div>
+      <div class="partner-name" id="partner-name-widget">—</div>
+      <div class="partner-score" id="partner-score-widget"><span>⭐</span><span id="partner-pts">—</span></div>
+    </div>
+    <div class="partner-status"></div>
+  </div>
 </div>
 
 <!-- MAIN GAME AREA -->
@@ -720,23 +1830,27 @@ body {
   <div class="side-panel">
     <div class="moves-panel">
       <div class="moves-label">Ходов сделано:</div>
-      <div class="moves-count"><span id="moves-done">0</span><span>/</span><span id="moves-max">20</span></div>
+      <div class="moves-count"><span id="moves-done">0</span><span>/</span><span id="moves-max">10</span></div>
     </div>
 
-    <div class="timer-panel">
-      <div class="timer-label">До нового испытания</div>
+    <div class="timer-panel" id="level-timer-panel">
+      <div class="timer-label" id="level-timer-label">Время уровня</div>
       <div class="timer-row">
-        <span class="timer-ico">⏳</span>
-        <span id="timer">05:53:08</span>
+        <span class="timer-ico" id="level-timer-ico">⏳</span>
+        <span id="level-timer">05:00</span>
       </div>
     </div>
 
     <div class="boost-panel">
-      <div class="boost-title">Бесконечные<br>ходы</div>
-      <button class="boost-btn" onclick="activateInfinite()">
-        <span class="ico">♾️</span> Включить
+      <div class="boost-title">Купить ходы</div>
+      <button class="boost-btn" onclick="openBuyMoves()">
+        <span>🛒</span> Купить
       </button>
-      <div class="boost-price">15 ФМ</div>
+      <div class="player-moves-block">
+        <span class="player-moves-ico">👟</span>
+        <span class="player-moves-label">Ваши ходы:</span>
+        <span class="player-moves-val" id="player-moves-pool">50</span>
+      </div>
     </div>
 
     <div class="boost-panel">
@@ -755,9 +1869,72 @@ body {
     <div class="win-stars">⭐⭐⭐</div>
     <div class="win-title">УРОВЕНЬ ПРОЙДЕН!</div>
     <div class="win-sub">Ходов: <strong id="final-moves">0</strong></div>
-    <div class="win-btns">
+
+    <!-- REPLAY LINK -->
+    <div class="replay-link" onclick="openReplay()">
+      <div class="replay-avatar" id="win-partner-avatar">🧑</div>
+      <div class="replay-text">
+        <div class="replay-caption">Посмотреть решение</div>
+        <div class="replay-name" id="win-partner-name">Соперник</div>
+        <div class="replay-meta" id="win-partner-meta">прошёл за — ходов</div>
+      </div>
+      <div class="replay-play-btn">
+        <span class="replay-play-icon">▶</span>
+        <span class="replay-play-label">Реплей</span>
+      </div>
+    </div>
+
+    <div class="win-btns" style="margin-top:12px;">
       <button class="win-btn win-btn-retry" onclick="resetLevel()">↺ Ещё раз</button>
       <button class="win-btn win-btn-next" id="btn-next" onclick="nextLevel()">Далее ➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- REPLAY MODAL -->
+<div class="replay-modal" id="replay-modal">
+  <div class="replay-modal-card">
+    <div class="replay-modal-header">
+      <div class="replay-modal-avatar" id="rm-avatar">🧑</div>
+      <div class="replay-modal-info">
+        <div class="replay-modal-name" id="rm-name">—</div>
+        <div class="replay-modal-sub">Решение уровня <span id="rm-level">1</span></div>
+      </div>
+      <button class="replay-modal-close" onclick="closeReplay()">✕</button>
+    </div>
+
+    <div class="replay-board-wrap">
+      <div class="replay-board-title" id="rm-board-title">Начало</div>
+      <div style="position:relative; width:fit-content; margin:0 auto;">
+        <div class="replay-mini-board" id="rm-board"></div>
+        <!-- move flash label -->
+        <div id="rm-move-flash" style="
+          position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+          font-family:'Russo One',sans-serif; font-size:28px; color:#FFE040;
+          text-shadow:0 0 20px rgba(255,200,0,0.8); pointer-events:none;
+          opacity:0; transition:opacity 0.2s; font-weight:900;
+          background:rgba(0,0,0,0.55); padding:6px 18px; border-radius:10px;
+          white-space:nowrap;
+        "></div>
+      </div>
+    </div>
+
+    <!-- progress dots -->
+    <div id="rm-dots" style="display:flex;justify-content:center;gap:6px;margin:10px 0 14px;"></div>
+
+    <div class="replay-stats-row">
+      <div class="replay-stat">
+        <div class="replay-stat-val" id="rm-moves-val">—</div>
+        <div class="replay-stat-label">Ходов</div>
+      </div>
+      <div class="replay-stat">
+        <div class="replay-stat-val" id="rm-rating-val">—</div>
+        <div class="replay-stat-label">Рейтинг</div>
+      </div>
+      <div class="replay-stat">
+        <div class="replay-stat-val" id="rm-time-val">—с</div>
+        <div class="replay-stat-label">Время</div>
+      </div>
     </div>
   </div>
 </div>
@@ -780,6 +1957,307 @@ body {
 <script>
 // ══════════════════════════════════════════
 //  GAME CONFIG
+// ══════════════════════════════════════════
+
+// ══════════════════════════════════════════
+//  MATCHMAKING
+// ══════════════════════════════════════════
+
+const FAKE_PLAYERS = [
+  { name: 'Алексей К.',   emoji: '👨', rating: 1380 },
+  { name: 'Маша_777',     emoji: '👩', rating: 1455 },
+  { name: 'DarkFox',      emoji: '🦊', rating: 1502 },
+  { name: 'Сергей П.',    emoji: '🧔', rating: 1290 },
+  { name: 'NightOwl',     emoji: '🦉', rating: 1610 },
+  { name: 'Катя⚡',       emoji: '👱‍♀️', rating: 1340 },
+  { name: 'IronWolf99',   emoji: '🐺', rating: 1720 },
+  { name: 'Виктория М.',  emoji: '💁‍♀️', rating: 1195 },
+  { name: 'ZenMaster',    emoji: '🧘', rating: 1480 },
+  { name: 'Борис Д.',     emoji: '👴', rating: 1260 },
+];
+
+let matchedPlayer = null;
+
+function runMatchmaking() {
+  const progressBar = document.getElementById('mm-progress');
+  const candidatesEl = document.getElementById('mm-candidates');
+  const enemyPic     = document.getElementById('mm-enemy-pic');
+  const enemyName    = document.getElementById('mm-enemy-name');
+  const enemyRating  = document.getElementById('mm-enemy-rating');
+  const foundLabel   = document.getElementById('mm-found-label');
+  const startBtn     = document.getElementById('mm-start-btn');
+  const enemyDiv     = document.getElementById('mm-enemy');
+
+  // Shuffle candidates list to cycle through
+  const shuffled = [...FAKE_PLAYERS].sort(() => Math.random() - 0.5);
+
+  let progress = 0;
+  let candidateIdx = 0;
+  let phase = 'searching'; // 'searching' | 'found'
+
+  // Cycle fake candidates every 320ms
+  const candidateTimer = setInterval(() => {
+    if (phase !== 'searching') return;
+    const c = shuffled[candidateIdx % shuffled.length];
+    candidatesEl.textContent = c.name;
+    enemyPic.textContent = c.emoji;
+    enemyName.textContent = c.name;
+    candidateIdx++;
+  }, 320);
+
+  // Progress bar grows over ~3.5s
+  const progressTimer = setInterval(() => {
+    if (phase !== 'searching') return;
+    progress += 1.8;
+    progressBar.style.width = Math.min(progress, 100) + '%';
+
+    if (progress >= 100) {
+      clearInterval(progressTimer);
+      clearInterval(candidateTimer);
+      phase = 'found';
+
+      // Pick final player
+      matchedPlayer = shuffled[Math.floor(Math.random() * shuffled.length)];
+
+      // Animate enemy reveal
+      enemyDiv.classList.add('found');
+      enemyPic.textContent  = matchedPlayer.emoji;
+      enemyName.textContent = matchedPlayer.name;
+      enemyRating.textContent = '⭐ ' + matchedPlayer.rating;
+      enemyRating.style.opacity = '1';
+      candidatesEl.textContent = '';
+      document.getElementById('mm-spinner').style.opacity = '0';
+      foundLabel.classList.add('show');
+
+      // Populate partner widget
+      document.getElementById('partner-pic').textContent         = matchedPlayer.emoji;
+      document.getElementById('partner-name-widget').textContent = matchedPlayer.name;
+      document.getElementById('partner-pts').textContent         = matchedPlayer.rating;
+
+      // Show start button
+      setTimeout(() => startBtn.classList.add('show'), 400);
+    }
+  }, 60);
+}
+
+function startFromMatchmaking() {
+  const overlay = document.getElementById('overlay-matchmaking');
+  overlay.style.transition = 'opacity 0.4s';
+  overlay.style.opacity = '0';
+  setTimeout(() => { overlay.style.display = 'none'; }, 400);
+  loadLevel();
+}
+
+// ══════════════════════════════════════════
+//  REPLAY SYSTEM
+// ══════════════════════════════════════════
+
+// Known solutions per level index (sequences of moves: {id, col, row})
+const LEVEL_SOLUTIONS = [
+  // L1: a↑ row=0, player→ col=3
+  [ {id:'a', col:3, row:0}, {id:'player', col:3, row:2} ],
+  // L2: a↓ row=3, b↑ row=0, player→ col=3
+  [ {id:'a', col:2, row:3}, {id:'b', col:4, row:0}, {id:'player', col:3, row:2} ],
+  // L3: c← col=0, a↓ row=3, b↑ row=0, d↑ row=0, player→ col=3
+  [ {id:'c', col:0, row:4}, {id:'a', col:2, row:3}, {id:'b', col:3, row:0}, {id:'d', col:4, row:0}, {id:'player', col:3, row:2} ],
+  // L4: f← col=0, a↓ row=3, b↓ row=3, d← col=2, c↑ row=0, player→ col=3
+  [ {id:'f', col:0, row:4}, {id:'a', col:2, row:3}, {id:'b', col:3, row:3}, {id:'d', col:2, row:0}, {id:'c', col:4, row:0}, {id:'player', col:3, row:2} ],
+];
+
+// Fake solve times (seconds)
+const FAKE_TIMES = [18, 25, 31, 42, 55, 67, 74, 88];
+
+let replayStates  = []; // array of car-position snapshots
+let replayCurrent = 0;
+let replayAutoTimer = null;
+
+const RM_CELL  = 44;
+const RM_GAP   = 3;
+const RM_STEP  = RM_CELL + RM_GAP;
+
+function buildReplayStates(levelIdx) {
+  const lvl  = LEVELS[levelIdx];
+  const sol  = LEVEL_SOLUTIONS[levelIdx];
+  // deep clone initial state
+  let state  = lvl.cars.map(c => ({...c}));
+  const snapshots = [ state.map(c => ({...c})) ]; // step 0 = initial
+
+  sol.forEach(move => {
+    state = state.map(c => c.id === move.id ? {...c, col: move.col, row: move.row} : {...c});
+    snapshots.push(state.map(c => ({...c})));
+  });
+  return snapshots;
+}
+
+function renderReplayBoard(state) {
+  const board = document.getElementById('rm-board');
+  // Remove existing blocks (keep cells)
+  board.querySelectorAll('.replay-mini-block').forEach(e => e.remove());
+
+  state.forEach(car => {
+    const el = document.createElement('div');
+    el.className = 'replay-mini-block ' + (car.id === 'player' ? 'player' : 'wood');
+    const w = car.dir === 'H' ? car.length * RM_STEP - RM_GAP : RM_CELL;
+    const h = car.dir === 'V' ? car.length * RM_STEP - RM_GAP : RM_CELL;
+    el.style.cssText = `
+      width:${w}px; height:${h}px;
+      left:${car.col * RM_STEP}px;
+      top:${car.row * RM_STEP}px;
+    `;
+    board.appendChild(el);
+  });
+}
+
+function buildReplayBoard(levelIdx) {
+  const board = document.getElementById('rm-board');
+  board.innerHTML = '';
+  const size = 5 * RM_STEP - RM_GAP;
+  board.style.cssText = `
+    display:grid;
+    grid-template-columns:repeat(5,${RM_CELL}px);
+    grid-template-rows:repeat(5,${RM_CELL}px);
+    gap:${RM_GAP}px;
+    position:relative;
+    width:${size}px; height:${size}px;
+  `;
+  for (let i = 0; i < 25; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'replay-mini-cell';
+    board.appendChild(cell);
+  }
+}
+
+function openReplay() {
+  const lvlIdx   = currentLevel;
+  const sol      = LEVEL_SOLUTIONS[lvlIdx];
+  const fakeTime = FAKE_TIMES[Math.floor(Math.random() * FAKE_TIMES.length)];
+  const fakeMoves = sol.length;
+
+  replayStates  = buildReplayStates(lvlIdx);
+  replayCurrent = 0;
+
+  // Header
+  document.getElementById('rm-avatar').textContent  = matchedPlayer ? matchedPlayer.emoji : '🧑';
+  document.getElementById('rm-name').textContent    = matchedPlayer ? matchedPlayer.name  : 'Соперник';
+  document.getElementById('rm-level').textContent   = lvlIdx + 1;
+  document.getElementById('rm-moves-val').textContent  = fakeMoves;
+  document.getElementById('rm-rating-val').textContent = matchedPlayer ? matchedPlayer.rating : '—';
+  document.getElementById('rm-time-val').textContent   = fakeTime + 'с';
+
+  // Build dots
+  const dotsEl = document.getElementById('rm-dots');
+  dotsEl.innerHTML = '';
+  replayStates.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.style.cssText = `width:8px;height:8px;border-radius:50%;background:${i===0?'#FFB700':'rgba(255,255,255,0.15)'};transition:background 0.3s,transform 0.3s;`;
+    d.id = 'rmdot-' + i;
+    dotsEl.appendChild(d);
+  });
+
+  buildReplayBoard(lvlIdx);
+  renderReplayBoard(replayStates[0]);
+  updateReplayDots(0);
+  document.getElementById('rm-board-title').textContent = 'Начало';
+
+  // Hide win overlay, show replay modal
+  document.getElementById('overlay-win').classList.remove('show');
+  document.getElementById('replay-modal').classList.add('show');
+
+  // Start auto-play after short pause
+  if (replayAutoTimer) clearInterval(replayAutoTimer);
+  setTimeout(() => startReplayAutoPlay(), 600);
+}
+
+function startReplayAutoPlay() {
+  replayCurrent = 0;
+  renderReplayBoard(replayStates[0]);
+  updateReplayDots(0);
+  document.getElementById('rm-board-title').textContent = 'Начало';
+
+  replayAutoTimer = setInterval(() => {
+    if (replayCurrent >= replayStates.length - 1) {
+      clearInterval(replayAutoTimer);
+      replayAutoTimer = null;
+      showReplayResult();
+      return;
+    }
+    replayCurrent++;
+    renderReplayBoard(replayStates[replayCurrent]);
+    updateReplayDots(replayCurrent);
+    showMoveFlash('Ход ' + replayCurrent);
+    document.getElementById('rm-board-title').textContent =
+      replayCurrent < replayStates.length - 1
+        ? `Ход ${replayCurrent} из ${replayStates.length - 1}`
+        : 'Финиш! 🎉';
+  }, 900); // средняя скорость
+}
+
+function showMoveFlash(text) {
+  const el = document.getElementById('rm-move-flash');
+  el.textContent = text;
+  el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; }, 500);
+}
+
+function showReplayResult() {
+  // Highlight the board title with result
+  const title = document.getElementById('rm-board-title');
+  title.style.color = '#4AFF80';
+  title.style.fontSize = '14px';
+  // Brief flash of the done state
+  showMoveFlash('✓ Готово!');
+}
+
+function updateReplayDots(step) {
+  const total = replayStates.length;
+  for (let i = 0; i < total; i++) {
+    const d = document.getElementById('rmdot-' + i);
+    if (!d) continue;
+    if (i < step) {
+      d.style.background = 'rgba(255,183,0,0.4)';
+      d.style.transform = 'scale(1)';
+    } else if (i === step) {
+      d.style.background = '#FFB700';
+      d.style.transform = 'scale(1.4)';
+      d.style.boxShadow = '0 0 6px rgba(255,183,0,0.8)';
+    } else {
+      d.style.background = 'rgba(255,255,255,0.15)';
+      d.style.transform = 'scale(1)';
+      d.style.boxShadow = 'none';
+    }
+  }
+}
+
+function closeReplay() {
+  // Stop auto-play
+  if (replayAutoTimer) { clearInterval(replayAutoTimer); replayAutoTimer = null; }
+  // Reset board title color
+  const title = document.getElementById('rm-board-title');
+  title.style.color = '';
+  title.style.fontSize = '';
+  // Hide replay, show win overlay again
+  document.getElementById('replay-modal').classList.remove('show');
+  document.getElementById('overlay-win').classList.add('show');
+}
+
+function replayStep(dir) {
+  replayCurrent = Math.max(0, Math.min(replayStates.length - 1, replayCurrent + dir));
+  renderReplayBoard(replayStates[replayCurrent]);
+  updateReplayDots(replayCurrent);
+}
+
+function updateReplayControls() {} // kept for compat
+
+function replayAuto() {} // kept for compat
+
+// Auto-start matchmaking on page load
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(runMatchmaking, 400);
+});
+
+function openRules()  { document.getElementById('rules-modal').classList.add('show'); }
+function closeRules() { document.getElementById('rules-modal').classList.remove('show'); }
+
 // ══════════════════════════════════════════
 
 const GRID = 5;   // 5x5 grid
@@ -860,17 +2338,123 @@ let cars = [];
 let movesDone = 0;
 let infiniteMode = false;
 let dragState = null;
-let timerSec = 5 * 3600 + 53 * 60 + 8;
 let cntSec = 2 * 86400 + 20 * 3600 + 53 * 60 + 7;
 
-// Timer
+// ── MOVES SYSTEM ──
+// L1=10, L2=9, L3=8, L4=7 ходов на уровень
+const LEVEL_MOVE_LIMITS = [10, 9, 8, 7];
+let playerMovesPool = 50; // стартовый запас ходов
+let fmBalance = 240;
+
+function getLevelMoveLimit() { return LEVEL_MOVE_LIMITS[currentLevel] || 10; }
+
+function updateMovesPool() {
+  document.getElementById('player-moves-pool').textContent = playerMovesPool;
+  const el = document.getElementById('player-moves-pool');
+  el.style.animation = 'movesAdded 0.5s ease';
+  setTimeout(() => { el.style.animation = ''; }, 500);
+}
+
+// ── LEVEL TIMER ──
+// L1=300с, L2=290с, L3=280с, L4=270с
+const LEVEL_TIMES = [300, 290, 280, 270];
+let levelTimerSec = 0;
+let levelTimerInterval = null;
+
+function getLevelTime(lvl) { return LEVEL_TIMES[lvl] || 300; }
+
+function startLevelTimer() {
+  stopLevelTimer();
+  levelTimerSec = getLevelTime(currentLevel);
+  renderLevelTimer();
+  levelTimerInterval = setInterval(() => {
+    levelTimerSec--;
+    renderLevelTimer();
+    if (levelTimerSec <= 0) {
+      stopLevelTimer();
+      onLevelTimerExpired();
+    }
+  }, 1000);
+}
+
+function stopLevelTimer() {
+  if (levelTimerInterval) { clearInterval(levelTimerInterval); levelTimerInterval = null; }
+}
+
+function renderLevelTimer() {
+  const m = Math.floor(levelTimerSec / 60);
+  const s = levelTimerSec % 60;
+  const txt = pad(m) + ':' + pad(s);
+  document.getElementById('level-timer').textContent = txt;
+
+  // Color warning: red when < 30s, orange when < 60s
+  const el = document.getElementById('level-timer');
+  const ico = document.getElementById('level-timer-ico');
+  const panel = document.getElementById('level-timer-panel');
+  if (levelTimerSec <= 30) {
+    el.style.color = '#FF4444';
+    ico.textContent = '🔴';
+    panel.style.borderColor = 'rgba(255,60,60,0.4)';
+    panel.style.background = 'rgba(255,40,40,0.08)';
+    // Pulse animation
+    el.style.animation = 'timerPulse 0.6s ease-in-out infinite';
+  } else if (levelTimerSec <= 60) {
+    el.style.color = '#FF8C00';
+    ico.textContent = '⚠️';
+    panel.style.borderColor = 'rgba(255,140,0,0.4)';
+    panel.style.background = '';
+    el.style.animation = '';
+  } else {
+    el.style.color = '';
+    ico.textContent = '⏳';
+    panel.style.borderColor = '';
+    panel.style.background = '';
+    el.style.animation = '';
+  }
+}
+
+function onLevelTimerExpired() {
+  // Go back to previous level (or restart level 1)
+  const prevLevel = Math.max(0, currentLevel - 1);
+
+  // Show timeout overlay briefly then reload
+  showTimeoutOverlay(prevLevel, () => {
+    currentLevel = prevLevel;
+    loadLevel();
+  });
+}
+
+function showTimeoutOverlay(prevLevel, cb) {
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.82);backdrop-filter:blur(6px);';
+  const msg = prevLevel === 0 ? 'Возвращаемся на уровень 1' : ('Возвращаемся на уровень ' + prevLevel);
+  ov.innerHTML = '<div style="background:linear-gradient(170deg,#1e1010,#120808);border:2px solid rgba(255,60,60,0.5);border-radius:20px;padding:36px 40px;text-align:center;max-width:340px;width:90%;animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);">'
+    + '<div style="font-size:52px;margin-bottom:12px;">⏰</div>'
+    + '<div style="font-family:Russo One,sans-serif;font-size:22px;color:#FF4444;margin-bottom:8px;">Время вышло!</div>'
+    + '<div style="font-size:14px;color:rgba(255,255,255,0.6);font-weight:700;margin-bottom:24px;line-height:1.5;">' + msg + '</div>'
+    + '<div style="width:100%;height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">'
+    + '<div id="timeout-bar" style="height:100%;background:#FF4444;width:100%;transition:width 2s linear;border-radius:3px;"></div>'
+    + '</div></div>';
+  document.body.appendChild(ov);
+  // Animate bar shrink
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      document.getElementById('timeout-bar').style.width = '0%';
+    });
+  });
+  setTimeout(() => {
+    ov.style.transition = 'opacity 0.3s';
+    ov.style.opacity = '0';
+    setTimeout(() => { ov.remove(); cb(); }, 300);
+  }, 2200);
+}
+
+// Countdown (top bar)
 setInterval(() => {
-  if (timerSec > 0) timerSec--;
-  document.getElementById('timer').textContent = formatTime(timerSec);
   if (cntSec > 0) cntSec--;
   const d = Math.floor(cntSec / 86400);
   const r = cntSec % 86400;
-  document.getElementById('countdown').textContent = `${d} дня ${formatTime(r)}`;
+  document.getElementById('countdown').textContent = d + ' дня ' + formatTime(r);
 }, 1000);
 
 function formatTime(s) {
@@ -897,12 +2481,18 @@ function loadLevel() {
 
   document.getElementById('overlay-win').classList.remove('show');
   document.getElementById('overlay-complete').classList.remove('show');
+
+  // Update timer label and start countdown
+  document.getElementById('level-timer-label').textContent = 'Время уровня ' + (currentLevel + 1);
+  window.extraMovesGranted = 0;
+  updateMovesPool();
+  startLevelTimer();
 }
 
 function updateStageUI() {
   const n = currentLevel + 1;
   document.getElementById('stage-num').textContent = n;
-  document.getElementById('moves-max').textContent = LEVELS[currentLevel].maxMoves;
+  document.getElementById('moves-max').textContent = getLevelMoveLimit();
 
   for (let i = 1; i <= 3; i++) {
     const step = document.getElementById('step-' + i);
@@ -1107,7 +2697,22 @@ function endDrag(e) {
 
     if (!infiniteMode) {
       movesDone++;
+      // Deduct from pool
+      if (playerMovesPool > 0) playerMovesPool--;
       updateMovesUI();
+      updateMovesPool();
+    }
+
+    // Check move limit
+    if (!infiniteMode && movesDone >= getLevelMoveLimit() + (window.extraMovesGranted || 0)) {
+      checkWin(); // check win first in case last move wins
+      // Only show out-of-moves if not yet won
+      setTimeout(() => {
+        if (document.getElementById('overlay-win').classList.contains('show')) return;
+        if (document.getElementById('overlay-complete').classList.contains('show')) return;
+        openOutOfMoves();
+      }, 100);
+      return;
     }
 
     checkWin();
@@ -1134,9 +2739,19 @@ function checkWin() {
     el.style.left = (GRID * STEP + 60) + 'px';
 
     setTimeout(() => {
+      stopLevelTimer();
       spawnConfetti();
       document.getElementById('final-moves').textContent = movesDone;
 
+      // Populate win card partner info
+      if (matchedPlayer) {
+        document.getElementById('win-partner-avatar').textContent = matchedPlayer.emoji;
+        document.getElementById('win-partner-name').textContent   = matchedPlayer.name;
+        const sol = LEVEL_SOLUTIONS[currentLevel];
+        const fakeTime = FAKE_TIMES[Math.floor(Math.random() * FAKE_TIMES.length)];
+        document.getElementById('win-partner-meta').textContent =
+          `прошёл за ${sol.length} ход${sol.length === 1 ? '' : sol.length < 5 ? 'а' : 'ов'} · ${fakeTime}с`;
+      }
       if (currentLevel >= LEVELS.length - 1) {
         document.getElementById('overlay-complete').classList.add('show');
       } else {
@@ -1168,14 +2783,56 @@ function restartAll() {
   document.getElementById('overlay-complete').classList.remove('show');
 }
 
-function activateInfinite() {
-  infiniteMode = !infiniteMode;
-  const btn = document.querySelector('.boost-panel:nth-child(3) .boost-btn');
-  btn.textContent = infiniteMode ? '✓ Активно' : '♾️ Включить';
-  btn.style.background = infiniteMode
-    ? 'linear-gradient(180deg, #27AE60, #1E8449)'
-    : 'linear-gradient(180deg, #FFB700 0%, #E08000 100%)';
+// ── OUT OF MOVES ──
+function openOutOfMoves() {
+  document.getElementById('oom-limit').textContent = getLevelMoveLimit();
+  document.getElementById('outofmoves-modal').classList.add('show');
+  stopLevelTimer();
 }
+function closeOutOfMoves() {
+  document.getElementById('outofmoves-modal').classList.remove('show');
+}
+
+// ── BUY MOVES ──
+function openBuyMoves() {
+  document.getElementById('fm-balance').textContent = fmBalance + ' ФМ';
+  document.getElementById('buymoves-modal').classList.add('show');
+}
+function closeBuyMoves() {
+  document.getElementById('buymoves-modal').classList.remove('show');
+}
+function buyMoves(amount, cost) {
+  if (fmBalance < cost) {
+    // Flash balance red
+    const el = document.getElementById('fm-balance');
+    el.style.color = '#FF4444';
+    setTimeout(() => { el.style.color = ''; }, 600);
+    return;
+  }
+  fmBalance -= cost;
+  playerMovesPool += amount;
+  document.getElementById('fm-balance').textContent = fmBalance + ' ФМ';
+  updateMovesPool();
+
+  // Flash success
+  const el = document.getElementById('fm-balance');
+  el.style.color = '#4AFF80';
+  setTimeout(() => { el.style.color = ''; }, 600);
+
+  // If came from out-of-moves, add bought moves to current level allowance
+  // Allow the player to keep playing: increase movesDone limit by bought amount
+  // We track extra moves granted this level
+  if (!window.extraMovesGranted) window.extraMovesGranted = 0;
+  window.extraMovesGranted += amount;
+
+  closeBuyMoves();
+  closeOutOfMoves();
+
+  // Resume timer
+  startLevelTimer();
+}
+
+// getLevelMoveLimit already defined above; extra moves tracked via window.extraMovesGranted
 
 function activateExplosion() {
   // Remove all non-player blocks adjacent to player
@@ -1231,5 +2888,76 @@ function spawnConfetti(count = 50) {
 // START
 loadLevel();
 </script>
+
+<!-- ══ OUT OF MOVES MODAL ══ -->
+<div class="outofmoves-modal" id="outofmoves-modal">
+  <div class="outofmoves-card">
+    <div class="outofmoves-icon">🚧</div>
+    <div class="outofmoves-title">Ходы на исходе!</div>
+    <div class="outofmoves-sub">
+      Вы использовали все <strong id="oom-limit">10</strong> ходов на этом уровне.<br>
+      Купите дополнительные ходы, чтобы продолжить — или начните уровень заново.
+    </div>
+    <div class="outofmoves-btns">
+      <button class="outofmoves-btn-buy" onclick="closeOutOfMoves(); openBuyMoves();">
+        🛒 Купить ходы
+      </button>
+      <button class="outofmoves-btn-reset" onclick="closeOutOfMoves(); resetLevel();">
+        ↺ Начать уровень заново
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ BUY MOVES MODAL ══ -->
+<div class="buymoves-modal" id="buymoves-modal">
+  <div class="buymoves-card">
+    <div class="buymoves-header">
+      <div class="buymoves-header-icon">🛒</div>
+      <div class="buymoves-header-title">Купить ходы</div>
+      <button class="buymoves-close" onclick="closeBuyMoves()">✕</button>
+    </div>
+
+    <div class="buymoves-balance">
+      <div class="buymoves-balance-label">💰 Баланс ФМ</div>
+      <div class="buymoves-balance-val" id="fm-balance">240 ФМ</div>
+    </div>
+
+    <div class="buymoves-options">
+
+      <div class="buymoves-option" onclick="buyMoves(10, 5)">
+        <div class="buymoves-option-ico">👟</div>
+        <div class="buymoves-option-body">
+          <div class="buymoves-option-moves">10 ходов</div>
+          <div class="buymoves-option-label">попробовать</div>
+        </div>
+        <button class="buymoves-option-price">5 ФМ</button>
+      </div>
+
+      <div class="buymoves-option" onclick="buyMoves(100, 45)">
+        <div class="buymoves-option-ico">🏃</div>
+        <div class="buymoves-option-body">
+          <div class="buymoves-option-moves">100 ходов</div>
+          <div class="buymoves-option-label">отличный запас</div>
+        </div>
+        <button class="buymoves-option-price">45 ФМ</button>
+      </div>
+
+      <div class="buymoves-option best-value" onclick="buyMoves(500, 200)">
+        <div class="buymoves-option-badge">выгодно</div>
+        <div class="buymoves-option-ico">🚀</div>
+        <div class="buymoves-option-body">
+          <div class="buymoves-option-moves">500 ходов</div>
+          <div class="buymoves-option-label">максимум</div>
+        </div>
+        <button class="buymoves-option-price">200 ФМ</button>
+      </div>
+
+    </div>
+
+    <div class="buymoves-footer">Ходы не сгорают после окончания испытания</div>
+  </div>
+</div>
+
 </body>
 </html>
