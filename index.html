@@ -1829,6 +1829,89 @@ body {
 }
 .welcome-start-btn:hover  { filter: brightness(1.12); transform: translateY(-1px); }
 .welcome-start-btn:active { transform: translateY(2px); }
+
+/* ── TOP DAY LEADERBOARD ── */
+.td-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  margin-bottom: 4px;
+  transition: background 0.2s;
+}
+.td-row:hover { background: rgba(255,255,255,0.04); }
+.td-row.td-top3 { background: rgba(255,183,0,0.07); border: 1px solid rgba(255,183,0,0.18); }
+.td-row.td-me   { background: rgba(233,30,140,0.10); border: 1px solid rgba(233,30,140,0.3); }
+
+.td-pos {
+  width: 28px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 900;
+  flex-shrink: 0;
+  color: rgba(255,255,255,0.4);
+}
+.td-pos.gold   { color: #FFD700; font-size: 18px; }
+.td-pos.silver { color: #C0C0C0; font-size: 18px; }
+.td-pos.bronze { color: #CD7F32; font-size: 18px; }
+
+.td-pic {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.td-info {
+  flex: 1;
+  min-width: 0;
+}
+.td-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.td-name.td-me-name { color: #F48FB1; }
+.td-score {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  font-weight: 700;
+}
+.td-stars {
+  font-size: 13px;
+  font-weight: 900;
+  color: #FFB700;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.td-outside-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 1px;
+}
+
+.win-cheer {
+  font-size: 15px;
+  font-weight: 800;
+  color: #4AFF80;
+  text-shadow: 0 0 12px rgba(74,255,128,0.6);
+  margin: -8px 0 14px;
+  min-height: 0;
+  transition: opacity 0.3s;
+  animation: cheerPop 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.win-cheer:empty { display: none; }
+@keyframes cheerPop {
+  0%   { transform: scale(0.7); opacity: 0; }
+  100% { transform: scale(1);   opacity: 1; }
+}
 </style>
 </head>
 <body>
@@ -2061,10 +2144,26 @@ body {
   </svg>
 </div>
 
+<!-- TOP DAY MODAL -->
+<div class="rules-modal" id="topday-modal">
+  <div class="rules-card" style="max-width:420px;">
+    <div class="rules-header">
+      <div class="rules-header-icon">🥇</div>
+      <div class="rules-header-title">Топ дня</div>
+      <button class="rules-close" onclick="closeTopDay()">✕</button>
+    </div>
+    <div style="padding:16px 20px 24px;">
+      <div id="topday-list"></div>
+      <div id="topday-player-row" style="display:none;margin-top:12px;border-top:1px solid rgba(255,183,0,0.2);padding-top:12px;"></div>
+    </div>
+  </div>
+</div>
+
 <!-- TOP BAR -->
 <div class="top-bar">
   <div class="top-left">
     <div class="top-btn" onclick="openRules()"><span class="ico">🏆</span> Правила и призы</div>
+    <div class="top-btn" onclick="openTopDay()"><span class="ico">🥇</span> Топ дня</div>
   </div>
   <div class="top-center">
     <div class="game-title">Джунгли Зовут 2</div>
@@ -2136,11 +2235,6 @@ body {
       <button class="boost-btn" onclick="openBuyMoves()">
         <span>🛒</span> Купить
       </button>
-      <div class="player-moves-block">
-        <span class="player-moves-ico">👟</span>
-        <span class="player-moves-label">Ваши ходы:</span>
-        <span class="player-moves-val" id="player-moves-pool">50</span>
-      </div>
     </div>
 
     <div class="boost-panel">
@@ -2159,6 +2253,7 @@ body {
     <div class="win-stars" id="win-stars-display">⭐⭐⭐</div>
     <div class="win-title">УРОВЕНЬ <span id="win-level-num">1</span> ПРОЙДЕН!</div>
     <div class="win-sub">Ходов: <strong id="final-moves">0</strong></div>
+    <div class="win-cheer" id="win-cheer"></div>
 
     <!-- REPLAY LINK -->
     <div class="replay-link" onclick="openReplay()">
@@ -2667,6 +2762,93 @@ function closeWelcome() {
 function openRules()  { document.getElementById('rules-modal').classList.add('show'); }
 function closeRules() { document.getElementById('rules-modal').classList.remove('show'); }
 
+// ── TOP DAY LEADERBOARD ───────────────────────────────────────────────────
+const TOP_DAY_PLAYERS = [
+  { name: 'IronWolf99',   emoji: '🐺', stars: 74, levels: 25, time: '18:42' },
+  { name: 'NightOwl',     emoji: '🦉', stars: 71, levels: 25, time: '21:05' },
+  { name: 'DarkFox',      emoji: '🦊', stars: 68, levels: 24, time: '19:33' },
+  { name: 'Маша_777',     emoji: '👩', stars: 65, levels: 24, time: '22:17' },
+  { name: 'ZenMaster',    emoji: '🧘', stars: 63, levels: 23, time: '20:48' },
+  { name: 'SkyRacer',     emoji: '🚀', stars: 61, levels: 23, time: '23:01' },
+  { name: 'Алексей К.',   emoji: '👨', stars: 58, levels: 22, time: '21:55' },
+  { name: 'Katana_X',     emoji: '⚔️',  stars: 56, levels: 22, time: '24:30' },
+  { name: 'Катя⚡',       emoji: '👱‍♀️', stars: 54, levels: 21, time: '22:44' },
+  { name: 'TigerPaw',     emoji: '🐯', stars: 51, levels: 21, time: '25:10' },
+  { name: 'Сергей П.',    emoji: '🧔', stars: 49, levels: 20, time: '20:05' },
+  { name: 'MoonRider',    emoji: '🌙', stars: 47, levels: 20, time: '23:38' },
+  { name: 'GoldHunter',   emoji: '⛏️',  stars: 44, levels: 19, time: '21:20' },
+  { name: 'Борис Д.',     emoji: '👴', stars: 42, levels: 19, time: '26:14' },
+  { name: 'Виктория М.',  emoji: '💁‍♀️', stars: 40, levels: 18, time: '22:50' },
+  { name: 'NeonBlade',    emoji: '💡', stars: 37, levels: 18, time: '24:03' },
+  { name: 'Phantom77',    emoji: '👻', stars: 35, levels: 17, time: '23:15' },
+  { name: 'StarDust',     emoji: '✨', stars: 32, levels: 17, time: '25:42' },
+  { name: 'CyberNinja',   emoji: '🥷', stars: 29, levels: 16, time: '24:58' },
+  { name: 'JunglePro',    emoji: '🌿', stars: 26, levels: 16, time: '26:33' },
+];
+
+function openTopDay() {
+  const list = document.getElementById('topday-list');
+  const playerRow = document.getElementById('topday-player-row');
+  const myStars = totalPlayerStars;
+  const myLevels = currentLevel + 1;
+
+  // Find player position in leaderboard
+  const myEntry = { name: 'Вы', emoji: '🧑', stars: myStars, levels: myLevels };
+  const allPlayers = [...TOP_DAY_PLAYERS, myEntry]
+    .sort((a, b) => b.stars - a.stars || b.levels - a.levels);
+  const myPos = allPlayers.findIndex(p => p.name === 'Вы') + 1;
+
+  // Build top 20 list
+  list.innerHTML = '';
+  const top20 = TOP_DAY_PLAYERS.slice(0, 20);
+  const meInTop = myPos <= 20;
+
+  top20.forEach((p, i) => {
+    const pos = i + 1;
+    // Insert player row in correct sorted position if in top 20
+    if (meInTop && myPos === pos) {
+      list.appendChild(buildTdRow(myPos, myEntry, true));
+    }
+    list.appendChild(buildTdRow(pos, p, false));
+  });
+  if (meInTop && myPos === 21) list.appendChild(buildTdRow(myPos, myEntry, true));
+
+  // If player outside top 20 — show separator + player row below
+  if (!meInTop) {
+    playerRow.style.display = 'block';
+    playerRow.innerHTML =
+      '<div class="td-outside-label">· · · · · Ваше место · · · · ·</div>' +
+      buildTdRow(myPos, myEntry, true).outerHTML;
+  } else {
+    playerRow.style.display = 'none';
+  }
+
+  document.getElementById('topday-modal').classList.add('show');
+}
+
+function buildTdRow(pos, p, isMe) {
+  const div = document.createElement('div');
+  const posIcons = { 1: '🥇', 2: '🥈', 3: '🥉' };
+  const posClass = pos === 1 ? 'gold' : pos === 2 ? 'silver' : pos === 3 ? 'bronze' : '';
+  const posLabel = posIcons[pos] || pos;
+  const nameClass = isMe ? ' td-me-name' : '';
+  const nameSuffix = isMe ? ' (Вы)' : '';
+  const time = p.time || '—';
+
+  div.className = 'td-row' + (pos <= 3 ? ' td-top3' : '') + (isMe ? ' td-me' : '');
+  div.innerHTML =
+    '<div class="td-pos ' + posClass + '">' + posLabel + '</div>' +
+    '<div class="td-pic">' + p.emoji + '</div>' +
+    '<div class="td-info">' +
+      '<div class="td-name' + nameClass + '">' + p.name + nameSuffix + '</div>' +
+      '<div class="td-score">' + p.levels + ' ур. · ' + time + '</div>' +
+    '</div>' +
+    '<div class="td-stars">⭐ ' + p.stars + '</div>';
+  return div;
+}
+
+function closeTopDay() { document.getElementById('topday-modal').classList.remove('show'); }
+
 // ══════════════════════════════════════════
 
 let totalPlayerStars = 0;  // accumulated stars
@@ -2929,13 +3111,13 @@ let playerMovesPool = 50; // стартовый запас ходов
 let fmBalance = 240;
 
 function getLevelMoveLimit() {
-  // Starts at 10 on level 1, decreases by 1 each level, minimum 3
-  return Math.max(3, 10 - currentLevel);
+  return 10; // Always 10 moves per level
 }
 
 function updateMovesPool() {
-  document.getElementById('player-moves-pool').textContent = playerMovesPool;
   const el = document.getElementById('player-moves-pool');
+  if (!el) return; // element removed from UI
+  el.textContent = playerMovesPool;
   el.style.animation = 'movesAdded 0.5s ease';
   setTimeout(() => { el.style.animation = ''; }, 500);
 }
@@ -3053,6 +3235,8 @@ function loadLevel() {
   if (!document.getElementById('pdot-0')) buildProgressBar();
 
   movesDone = 0;
+  window.extraMovesGranted = 0;  // reset BEFORE updateMovesUI so /10 shows correctly
+  window.buyPopupShown = false;
   const lvl = LEVELS[currentLevel];
   cars = lvl.cars.map(c => ({ ...c }));
 
@@ -3066,8 +3250,6 @@ function loadLevel() {
 
   // Update timer label and start countdown
   document.getElementById('level-timer-label').textContent = 'Время уровня ' + (currentLevel + 1);
-  window.extraMovesGranted = 0;
-  updateMovesPool();
   startLevelTimer();
 }
 
@@ -3111,7 +3293,7 @@ function buildProgressBar() {
 function updateStageUI() {
   const lvl = currentLevel + 1;
   document.getElementById('stage-num').textContent = lvl;
-  document.getElementById('moves-max').textContent = getLevelMoveLimit();
+  // moves-max is managed by updateMovesUI
 
   const pct = (lvl - 1) / (TOTAL_LVLS - 1) * 100;
 
@@ -3133,6 +3315,7 @@ function updateStageUI() {
 
 function updateMovesUI() {
   document.getElementById('moves-done').textContent = movesDone;
+  document.getElementById('moves-max').textContent = 10 + (window.extraMovesGranted || 0);
 }
 
 function buildBoard() {
@@ -3319,25 +3502,23 @@ function endDrag(e) {
 
     if (!infiniteMode) {
       movesDone++;
-      // Deduct from pool
-      if (playerMovesPool > 0) playerMovesPool--;
       updateMovesUI();
-      updateMovesPool();
     }
 
     // Check move limit
-    if (!infiniteMode && movesDone >= getLevelMoveLimit() + (window.extraMovesGranted || 0)) {
+    const atLimit = !infiniteMode && movesDone >= getLevelMoveLimit() + (window.extraMovesGranted || 0);
+    if (atLimit) {
       checkWin(); // check win first in case last move wins
-      // Only show out-of-moves if not yet won
       setTimeout(() => {
         if (document.getElementById('overlay-win').classList.contains('show')) return;
         if (document.getElementById('overlay-complete').classList.contains('show')) return;
+        if (window.buyPopupShown) return;
+        window.buyPopupShown = true;
         openOutOfMoves();
       }, 100);
-      return;
+    } else {
+      checkWin();
     }
-
-    checkWin();
   } else {
     el.style.left = dragState.startCol * STEP + 'px';
     el.style.top = dragState.startRow * STEP + 'px';
@@ -3367,6 +3548,24 @@ function checkWin() {
 
       // Level number in popup
       document.getElementById('win-level-num').textContent = currentLevel + 1;
+
+      // Cheer message every 3rd level (levels 3, 6, 9, 12, ...)
+      const cheerEl = document.getElementById('win-cheer');
+      if (cheerEl) {
+        const lvl = currentLevel + 1;
+        if (lvl % 3 === 0) {
+          const phrases = [
+            'Ты молодец! 🎉', 'Крутой результат! 🔥', 'Так держать! 💪',
+            'Ты непобедим! ⚡', 'Настоящий герой джунглей! 🌿', 'Просто отлично! 🌟',
+            'Блестяще! ✨', 'Ты в ударе! 🚀', 'Уровень покорён! 🏆',
+            'Мастер паззлов! 🧩', 'Неудержимый! 🐆', 'Золото уже близко! 🪙',
+            'Браво, исследователь! 🗺️', 'Снова победа! 🥇', 'Феноменально! 🎯',
+          ];
+          cheerEl.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+        } else {
+          cheerEl.textContent = '';
+        }
+      }
 
       // Stars display
       const maxM = getLevelMoveLimit();
@@ -3521,8 +3720,11 @@ function stopFireworks() {
 
 // ── OUT OF MOVES ──
 function openOutOfMoves() {
-  document.getElementById('oom-limit').textContent = getLevelMoveLimit();
-  document.getElementById('outofmoves-modal').classList.add('show');
+  // Skip the intermediate "out of moves" modal — open buy directly
+  stopLevelTimer();
+  openBuyMoves();
+  // Keep oom modal hidden
+  // document.getElementById('outofmoves-modal').classList.add('show');
   stopLevelTimer();
 }
 function closeOutOfMoves() {
@@ -3539,30 +3741,30 @@ function closeBuyMoves() {
 }
 function buyMoves(amount, cost) {
   if (fmBalance < cost) {
-    // Flash balance red
     const el = document.getElementById('fm-balance');
     el.style.color = '#FF4444';
     setTimeout(() => { el.style.color = ''; }, 600);
     return;
   }
   fmBalance -= cost;
-  playerMovesPool += amount;
   document.getElementById('fm-balance').textContent = fmBalance + ' ФМ';
-  updateMovesPool();
 
   // Flash success
   const el = document.getElementById('fm-balance');
   el.style.color = '#4AFF80';
   setTimeout(() => { el.style.color = ''; }, 600);
 
-  // If came from out-of-moves, add bought moves to current level allowance
-  // Allow the player to keep playing: increase movesDone limit by bought amount
-  // We track extra moves granted this level
+  // Grant extra moves for this level
   if (!window.extraMovesGranted) window.extraMovesGranted = 0;
   window.extraMovesGranted += amount;
+  updateMovesUI();
 
   closeBuyMoves();
   closeOutOfMoves();
+
+  // Reset flag after a short delay so the pending setTimeout(100ms) check
+  // from the last move has already fired with buyPopupShown=true
+  setTimeout(() => { window.buyPopupShown = false; }, 200);
 
   // Resume timer
   startLevelTimer();
@@ -3571,15 +3773,21 @@ function buyMoves(amount, cost) {
 // getLevelMoveLimit already defined above; extra moves tracked via window.extraMovesGranted
 
 function activateExplosion() {
-  // Requires 5 moves from pool; show buy popup if insufficient
-  if (playerMovesPool <= 4) {
-    openBuyMoves();
-    return;
-  }
+  // Cost: 5 moves added to movesDone
+  movesDone = Math.min(movesDone + 5, getLevelMoveLimit() + (window.extraMovesGranted || 0));
+  updateMovesUI();
 
-  // Deduct 5 moves
-  playerMovesPool -= 5;
-  updateMovesPool();
+  // If now at or over limit, check win first, then maybe show buy popup
+  if (movesDone >= getLevelMoveLimit() + (window.extraMovesGranted || 0)) {
+    checkWin();
+    setTimeout(() => {
+      if (document.getElementById('overlay-win').classList.contains('show')) return;
+      if (document.getElementById('overlay-complete').classList.contains('show')) return;
+      if (window.buyPopupShown) return;
+      window.buyPopupShown = true;
+      openOutOfMoves();
+    }, 100);
+  }
 
   // Remove all non-player blocks adjacent to player
   const player = getCarById('player');
