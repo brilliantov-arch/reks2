@@ -1,258 +1,1235 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Колесо Фортуны</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Джунгли Зовут — Испытание</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&family=Russo+One&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #0a1a2e;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-        h1 {
-            color: white;
-            font-size: 3em;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+/* ── JUNGLE BACKGROUND ── */
+.bg {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 110%, #0d2a1a 0%, transparent 60%),
+    radial-gradient(ellipse 80% 60% at 10% 80%, #061a2a 0%, transparent 50%),
+    radial-gradient(ellipse 80% 60% at 90% 80%, #061a2a 0%, transparent 50%),
+    linear-gradient(180deg, #0c1f3a 0%, #091626 40%, #0a1f14 100%);
+}
 
-        .wheel-container {
-            position: relative;
-            width: 500px;
-            height: 500px;
-            margin: 30px auto;
-        }
+/* Leaf silhouettes */
+.bg::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(ellipse 30px 80px at 5% 70%, rgba(10,60,20,0.8) 0%, transparent 100%),
+    radial-gradient(ellipse 25px 70px at 8% 85%, rgba(10,60,20,0.7) 0%, transparent 100%),
+    radial-gradient(ellipse 40px 100px at 95% 60%, rgba(10,60,20,0.8) 0%, transparent 100%),
+    radial-gradient(ellipse 30px 90px at 92% 80%, rgba(10,60,20,0.7) 0%, transparent 100%);
+}
 
-        #wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 15px solid #fff;
-            box-shadow: 0 0 30px rgba(0,0,0,0.3);
-            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            position: relative;
-        }
+.leaves-left, .leaves-right {
+  position: fixed;
+  bottom: 0;
+  width: 220px;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+.leaves-left { left: 0; }
+.leaves-right { right: 0; transform: scaleX(-1); }
 
-        .arrow {
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-top: 50px solid #ff6b6b;
-            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
-            z-index: 10;
-        }
+.leaves-left svg, .leaves-right svg { width: 100%; height: 100%; }
 
-        .center-circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, #ffd700, #ffed4e);
-            border-radius: 50%;
-            border: 5px solid white;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            z-index: 5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #764ba2;
-        }
+/* ── TOP BAR ── */
+.top-bar {
+  position: relative; z-index: 10;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: linear-gradient(180deg, rgba(5,15,30,0.95) 0%, rgba(5,15,30,0.8) 100%);
+  border-bottom: 2px solid rgba(255,180,0,0.2);
+}
 
-        button {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
-            color: white;
-            border: none;
-            padding: 20px 50px;
-            font-size: 1.5em;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s;
-            font-weight: bold;
-            margin-top: 30px;
-        }
+.top-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
 
-        button:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
+.top-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  opacity: 0.9;
+}
 
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+.top-btn .ico { font-size: 18px; }
 
-        #result {
-            color: white;
-            font-size: 2em;
-            margin-top: 30px;
-            text-align: center;
-            min-height: 60px;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+.top-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-        @media (max-width: 600px) {
-            .wheel-container {
-                width: 350px;
-                height: 350px;
-            }
+.game-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: clamp(20px, 3vw, 28px);
+  background: linear-gradient(180deg, #FFE040 0%, #FF8C00 60%, #FF4500 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(255,100,0,0.5));
+  line-height: 1.1;
+  text-align: center;
+}
 
-            h1 {
-                font-size: 2em;
-            }
+.game-subtitle {
+  font-size: 14px;
+  color: #FF6020;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
 
-            button {
-                padding: 15px 35px;
-                font-size: 1.2em;
-            }
-        }
-    </style>
+.top-right {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-align: center;
+  color: #fff;
+  font-size: 13px;
+}
+
+.top-right .time {
+  font-size: 18px;
+  font-weight: 900;
+  color: #FFE040;
+}
+
+/* ── STAGE INDICATOR ── */
+.stage-bar {
+  position: relative; z-index: 10;
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.stage-badge {
+  width: 52px; height: 52px;
+  background: radial-gradient(circle, #9B59B6, #6C3483);
+  border-radius: 50%;
+  border: 3px solid #C39BD3;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 12px rgba(155,89,182,0.6);
+  flex-shrink: 0;
+}
+
+.stage-text {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.stage-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-left: 8px;
+}
+
+.step {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 3px solid #555;
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  color: #aaa;
+  position: relative;
+}
+
+.step.active {
+  background: linear-gradient(135deg, #E91E8C, #C0106B);
+  border-color: #F48FB1;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(233,30,140,0.7);
+}
+
+.step.done {
+  background: linear-gradient(135deg, #888, #666);
+  border-color: #aaa;
+  color: #fff;
+}
+
+.step-line {
+  width: 20px; height: 3px;
+  background: #444;
+}
+
+.step-line.done { background: #888; }
+
+.step-gift {
+  font-size: 20px;
+}
+
+.surrender-btn {
+  margin-left: auto;
+  background: linear-gradient(180deg, #555 0%, #333 100%);
+  border: 2px solid #666;
+  border-radius: 10px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 10px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 0 #222, 0 6px 12px rgba(0,0,0,0.4);
+  transition: transform 0.1s;
+}
+
+.surrender-btn:hover { filter: brightness(1.1); }
+.surrender-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #222; }
+.surrender-btn .flag { font-size: 20px; }
+
+/* ── MAIN LAYOUT ── */
+.main {
+  position: relative; z-index: 10;
+  display: flex;
+  gap: 16px;
+  padding: 8px 16px;
+  align-items: flex-start;
+  justify-content: center;
+  flex: 1;
+}
+
+/* ── GAME BOARD ── */
+.board-container {
+  position: relative;
+}
+
+.board-outer {
+  background: linear-gradient(135deg, #C8720A 0%, #E8960D 30%, #C8720A 60%, #FF9F1C 100%);
+  border-radius: 16px;
+  padding: 6px;
+  box-shadow:
+    0 0 0 3px #7A4200,
+    0 8px 32px rgba(0,0,0,0.6),
+    inset 0 2px 0 rgba(255,200,100,0.3);
+}
+
+.board-inner {
+  background: linear-gradient(135deg, #B86208 0%, #D4820A 40%, #B86208 100%);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+.board-canvas {
+  background: #1a1008;
+  border-radius: 8px;
+  position: relative;
+  display: grid;
+  gap: 4px;
+}
+
+/* EXIT ARROW */
+.exit-arrow {
+  position: absolute;
+  right: -38px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.arrow-svg {
+  color: rgba(255,255,255,0.25);
+  font-size: 28px;
+  animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes arrowPulse {
+  0%,100% { opacity: 0.3; transform: translateX(0); }
+  50% { opacity: 0.7; transform: translateX(4px); }
+}
+
+/* ── CELLS ── */
+.cell {
+  background: rgba(0,0,0,0.3);
+  border-radius: 4px;
+}
+
+/* ── BLOCKS (cars) ── */
+.block {
+  position: absolute;
+  border-radius: 10px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  z-index: 10;
+  transition: box-shadow 0.15s;
+}
+
+.block:active { cursor: grabbing; z-index: 30; }
+
+.block-inner {
+  width: 100%; height: 100%;
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* WOODEN block style */
+.block-wood .block-inner {
+  background: linear-gradient(160deg,
+    #FFD060 0%,
+    #E8A020 20%,
+    #FFC030 40%,
+    #D08010 60%,
+    #F0B828 80%,
+    #C87A10 100%
+  );
+  box-shadow:
+    inset 0 3px 0 rgba(255,240,120,0.6),
+    inset 0 -3px 0 rgba(100,50,0,0.4),
+    inset 3px 0 0 rgba(255,210,80,0.3),
+    inset -3px 0 0 rgba(80,40,0,0.3),
+    0 4px 12px rgba(0,0,0,0.5),
+    0 2px 0 #7A4A00;
+}
+
+/* Shine effect on wood */
+.block-wood .block-inner::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 8%; right: 30%;
+  height: 35%;
+  background: linear-gradient(180deg, rgba(255,255,200,0.5) 0%, transparent 100%);
+  border-radius: 50%;
+  transform: rotate(-5deg);
+}
+
+/* Wood grain lines */
+.block-wood .block-inner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 8px,
+    rgba(180,100,0,0.12) 8px,
+    rgba(180,100,0,0.12) 9px
+  );
+  border-radius: 10px;
+}
+
+/* PLAYER block (pink/purple) */
+.block-player .block-inner {
+  background: linear-gradient(135deg,
+    #E040FB 0%,
+    #CE2FE8 30%,
+    #B020D0 60%,
+    #D535F0 100%
+  );
+  box-shadow:
+    inset 0 3px 0 rgba(255,150,255,0.5),
+    inset 0 -3px 0 rgba(60,0,80,0.4),
+    0 4px 16px rgba(200,0,255,0.6),
+    0 2px 0 #5A0080,
+    0 0 20px rgba(180,0,255,0.3);
+}
+
+.block-player .block-inner::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 10%; right: 10%;
+  height: 30%;
+  background: linear-gradient(180deg, rgba(255,200,255,0.4) 0%, transparent 100%);
+  border-radius: 50%;
+}
+
+.block-player .skull {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.skull-icon {
+  width: 36px; height: 36px;
+  background: radial-gradient(circle, rgba(255,220,100,0.9), rgba(200,140,0,0.8));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 2px solid rgba(255,200,50,0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Dragging state */
+.block.dragging {
+  z-index: 50;
+  filter: brightness(1.2) drop-shadow(0 8px 16px rgba(0,0,0,0.6));
+  transform: scale(1.04);
+}
+
+/* ── RIGHT PANEL ── */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 180px;
+}
+
+.moves-panel {
+  background: rgba(0,0,0,0.5);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.moves-label {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.moves-count {
+  background: linear-gradient(180deg, #2a2a2a, #1a1a1a);
+  border: 2px solid #444;
+  border-radius: 8px;
+  padding: 8px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 28px;
+  color: #FFE040;
+  text-shadow: 0 0 12px rgba(255,220,0,0.5);
+}
+
+.moves-count span { color: #888; }
+
+.timer-panel {
+  background: rgba(0,0,0,0.5);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 12px 16px;
+  text-align: center;
+}
+
+.timer-label {
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.timer-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #E91E8C;
+  font-family: 'Russo One', sans-serif;
+  font-size: 22px;
+}
+
+.timer-ico { font-size: 20px; }
+
+/* BOOST PANELS */
+.boost-panel {
+  background: rgba(0,0,0,0.5);
+  border: 2px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.boost-title {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.boost-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(180deg, #FFB700 0%, #E08000 100%);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #8A4A00, 0 6px 12px rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: transform 0.1s;
+  margin-bottom: 4px;
+}
+
+.boost-btn:hover { filter: brightness(1.1); }
+.boost-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #8A4A00; }
+.boost-btn .ico { font-size: 18px; }
+
+.boost-price {
+  color: #aaa;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── WIN OVERLAY ── */
+.overlay {
+  position: fixed; inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+}
+
+.overlay.show { display: flex; }
+
+.win-card {
+  background: linear-gradient(180deg, #1a3a2a, #0f2018);
+  border: 3px solid #E8A020;
+  border-radius: 20px;
+  padding: 40px 48px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(200,140,0,0.4);
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.win-stars { font-size: 44px; margin-bottom: 12px; filter: drop-shadow(0 0 12px gold); }
+.win-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 32px;
+  background: linear-gradient(180deg, #FFE040, #FF8C00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+}
+.win-sub { color: #aaa; font-size: 15px; margin-bottom: 24px; }
+.win-sub strong { color: #FFE040; }
+
+.win-btns { display: flex; gap: 12px; justify-content: center; }
+
+.win-btn {
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: transform 0.1s;
+  border: none;
+}
+
+.win-btn:active { transform: scale(0.97); }
+
+.win-btn-next {
+  background: linear-gradient(180deg, #FFB700, #E08000);
+  color: #fff;
+  box-shadow: 0 4px 0 #7A4000, 0 6px 16px rgba(255,150,0,0.4);
+}
+
+.win-btn-retry {
+  background: linear-gradient(180deg, #555, #333);
+  color: #fff;
+  box-shadow: 0 4px 0 #222;
+}
+
+.win-btn:hover { filter: brightness(1.1); }
+
+/* CONFETTI */
+.confetti-piece {
+  position: fixed;
+  width: 10px; height: 10px;
+  pointer-events: none;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg) translateX(var(--dx)); opacity: 0; }
+}
+
+/* COMPLETE CARD */
+.complete-card {
+  background: linear-gradient(180deg, #1a3a2a, #0f2018);
+  border: 3px solid #E8A020;
+  border-radius: 20px;
+  padding: 40px 48px;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(200,140,0,0.4);
+  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+.trophy { font-size: 80px; margin-bottom: 16px; filter: drop-shadow(0 0 20px gold); animation: trophyGlow 2s ease-in-out infinite; }
+@keyframes trophyGlow {
+  0%,100% { filter: drop-shadow(0 0 20px gold); }
+  50% { filter: drop-shadow(0 0 40px gold); }
+}
+
+.complete-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 28px;
+  background: linear-gradient(180deg, #FFE040, #FF8C00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 8px;
+}
+
+.complete-dots {
+  display: flex; gap: 10px; justify-content: center; margin: 16px 0;
+}
+
+.complete-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: #FFB700;
+  box-shadow: 0 0 8px gold;
+}
+
+</style>
 </head>
 <body>
-    <h1>🎰 Колесо Фортуны 🎰</h1>
-    
-    <div class="wheel-container">
-        <div class="arrow"></div>
-        <canvas id="wheel" width="500" height="500"></canvas>
-        <div class="center-circle">SPIN</div>
+
+<div class="bg"></div>
+
+<!-- Leaf decorations -->
+<div class="leaves-left">
+  <svg viewBox="0 0 220 900" preserveAspectRatio="xMinYMax meet">
+    <ellipse cx="30" cy="750" rx="20" ry="120" fill="#0d3a18" opacity="0.9" transform="rotate(-20 30 750)"/>
+    <ellipse cx="60" cy="700" rx="16" ry="100" fill="#0a4020" opacity="0.8" transform="rotate(-35 60 700)"/>
+    <ellipse cx="10" cy="650" rx="25" ry="140" fill="#0c3515" opacity="0.95" transform="rotate(-10 10 650)"/>
+    <ellipse cx="80" cy="800" rx="18" ry="90" fill="#082e12" opacity="0.7" transform="rotate(-50 80 800)"/>
+    <ellipse cx="40" cy="850" rx="22" ry="110" fill="#0e4020" opacity="0.85" transform="rotate(-5 40 850)"/>
+    <ellipse cx="100" cy="600" rx="14" ry="80" fill="#0a3018" opacity="0.6" transform="rotate(-60 100 600)"/>
+    <!-- fireflies -->
+    <circle cx="120" cy="500" r="3" fill="#90FF60" opacity="0.6">
+      <animate attributeName="opacity" values="0.6;0;0.6" dur="2.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="50" cy="400" r="2" fill="#A0FF80" opacity="0.4">
+      <animate attributeName="opacity" values="0.4;0;0.4" dur="3.1s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+</div>
+
+<div class="leaves-right">
+  <svg viewBox="0 0 220 900" preserveAspectRatio="xMinYMax meet">
+    <ellipse cx="30" cy="750" rx="20" ry="120" fill="#0d3a18" opacity="0.9" transform="rotate(-20 30 750)"/>
+    <ellipse cx="60" cy="700" rx="16" ry="100" fill="#0a4020" opacity="0.8" transform="rotate(-35 60 700)"/>
+    <ellipse cx="10" cy="650" rx="25" ry="140" fill="#0c3515" opacity="0.95" transform="rotate(-10 10 650)"/>
+    <ellipse cx="80" cy="800" rx="18" ry="90" fill="#082e12" opacity="0.7" transform="rotate(-50 80 800)"/>
+    <ellipse cx="40" cy="850" rx="22" ry="110" fill="#0e4020" opacity="0.85" transform="rotate(-5 40 850)"/>
+    <circle cx="80" cy="350" r="2" fill="#90FF60" opacity="0.5">
+      <animate attributeName="opacity" values="0.5;0;0.5" dur="1.8s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+</div>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="top-left">
+    <div class="top-btn"><span class="ico">🏆</span> Правила и призы</div>
+    <div class="top-btn"><span class="ico">💬</span> Отзывы</div>
+  </div>
+  <div class="top-center">
+    <div class="game-title">Джунгли Зовут</div>
+    <div class="game-subtitle">Испытание</div>
+  </div>
+  <div class="top-right">
+    <div>До итогов финала:</div>
+    <div class="time" id="countdown">2 дня 20:53:07</div>
+  </div>
+</div>
+
+<!-- STAGE BAR -->
+<div class="stage-bar">
+  <div class="stage-badge">🪙</div>
+  <div class="stage-text">Вы на <b id="stage-num">1</b> этапе<br>«Испытания»</div>
+  <div class="stage-steps">
+    <div class="step active" id="step-1">1</div>
+    <div class="step-line" id="line-1"></div>
+    <div class="step" id="step-2">2</div>
+    <div class="step-line" id="line-2"></div>
+    <div class="step" id="step-3">3</div>
+    <div class="step-line" id="line-3"></div>
+    <div class="step" id="step-4"><span class="step-gift">🎁</span></div>
+  </div>
+  <button class="surrender-btn" onclick="resetLevel()"><span class="flag">⚑</span> Сдаться</button>
+</div>
+
+<!-- MAIN GAME AREA -->
+<div class="main">
+  <!-- BOARD -->
+  <div class="board-container">
+    <div class="board-outer">
+      <div class="board-inner">
+        <div class="board-canvas" id="board"></div>
+      </div>
+    </div>
+    <div class="exit-arrow">
+      <div class="arrow-svg">➤</div>
+    </div>
+  </div>
+
+  <!-- SIDE PANEL -->
+  <div class="side-panel">
+    <div class="moves-panel">
+      <div class="moves-label">Ходов сделано:</div>
+      <div class="moves-count"><span id="moves-done">0</span><span>/</span><span id="moves-max">20</span></div>
     </div>
 
-    <button id="spinBtn" onclick="spin()">КРУТИТЬ КОЛЕСО</button>
-    <div id="result"></div>
+    <div class="timer-panel">
+      <div class="timer-label">До нового испытания</div>
+      <div class="timer-row">
+        <span class="timer-ico">⏳</span>
+        <span id="timer">05:53:08</span>
+      </div>
+    </div>
 
-    <script>
-        const prizes = [
-            { text: '100₽', color: '#FF6B6B' },
-            { text: '500₽', color: '#4ECDC4' },
-            { text: '1000₽', color: '#FFE66D' },
-            { text: 'Попробуй ещё', color: '#95E1D3' },
-            { text: '5000₽', color: '#F38181' },
-            { text: '200₽', color: '#AA96DA' },
-            { text: 'Джекпот!', color: '#FCBAD3' },
-            { text: '50₽', color: '#A8E6CF' }
-        ];
+    <div class="boost-panel">
+      <div class="boost-title">Бесконечные<br>ходы</div>
+      <button class="boost-btn" onclick="activateInfinite()">
+        <span class="ico">♾️</span> Включить
+      </button>
+      <div class="boost-price">15 ФМ</div>
+    </div>
 
-        const canvas = document.getElementById('wheel');
-        const ctx = canvas.getContext('2d');
-        const centerX = canvas.width / 2;
-        const centerY = canvas.height / 2;
-        const radius = canvas.width / 2 - 15;
+    <div class="boost-panel">
+      <div class="boost-title">Взрыв</div>
+      <button class="boost-btn" onclick="activateExplosion()">
+        <span>💥</span> Включить
+      </button>
+      <div class="boost-price">9 ФМ</div>
+    </div>
+  </div>
+</div>
 
-        let currentRotation = 0;
-        let isSpinning = false;
+<!-- WIN OVERLAY -->
+<div class="overlay" id="overlay-win">
+  <div class="win-card">
+    <div class="win-stars">⭐⭐⭐</div>
+    <div class="win-title">УРОВЕНЬ ПРОЙДЕН!</div>
+    <div class="win-sub">Ходов: <strong id="final-moves">0</strong></div>
+    <div class="win-btns">
+      <button class="win-btn win-btn-retry" onclick="resetLevel()">↺ Ещё раз</button>
+      <button class="win-btn win-btn-next" id="btn-next" onclick="nextLevel()">Далее ➤</button>
+    </div>
+  </div>
+</div>
 
-        function drawWheel() {
-            const sliceAngle = (2 * Math.PI) / prizes.length;
+<!-- COMPLETE OVERLAY -->
+<div class="overlay" id="overlay-complete">
+  <div class="complete-card">
+    <div class="trophy">🏆</div>
+    <div class="complete-title">Все испытания<br>пройдены!</div>
+    <div class="complete-dots">
+      <div class="complete-dot"></div>
+      <div class="complete-dot"></div>
+      <div class="complete-dot"></div>
+      <div class="complete-dot"></div>
+    </div>
+    <button class="win-btn win-btn-next" onclick="restartAll()" style="margin-top:8px;">🔄 Играть снова</button>
+  </div>
+</div>
 
-            prizes.forEach((prize, index) => {
-                const startAngle = index * sliceAngle + currentRotation;
-                const endAngle = startAngle + sliceAngle;
+<script>
+// ══════════════════════════════════════════
+//  GAME CONFIG
+// ══════════════════════════════════════════
 
-                // Рисуем сектор
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-                ctx.closePath();
-                ctx.fillStyle = prize.color;
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 3;
-                ctx.stroke();
+const GRID = 5;   // 5x5 grid
+const CELL_SIZE = 90;
+const GAP = 5;
 
-                // Рисуем текст
-                ctx.save();
-                ctx.translate(centerX, centerY);
-                ctx.rotate(startAngle + sliceAngle / 2);
-                ctx.textAlign = 'center';
-                ctx.fillStyle = '#fff';
-                ctx.font = 'bold 24px Arial';
-                ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                ctx.shadowBlur = 3;
-                ctx.fillText(prize.text, radius * 0.65, 10);
-                ctx.restore();
-            });
-        }
+// Cell pixel size including gap
+const STEP = CELL_SIZE + GAP;
 
-        function spin() {
-            if (isSpinning) return;
+// Levels: exitRow = row index of the exit (right side)
+// Player car must have dir:'H' and reach col+length === GRID
+// ══════════════════════════════════════════
+//  LEVELS  (grid 5×5, exitRow=2)
+//  Решения проверены симуляцией:
+//  L1: 2 хода  — a↑, player→
+//  L2: 3 хода  — a↓, b↑, player→
+//  L3: 5 ходов — c←, a↓, b↑, d↑, player→
+//  L4: 6 ходов — f←, a↓, b↓, d←, c↑, player→
+// ══════════════════════════════════════════
+const LEVELS = [
+  {
+    name: 'Этап 1',
+    exitRow: 2,
+    maxMoves: 10,
+    cars: [
+      { id:'player', col:1, row:2, length:2, dir:'H' },
+      { id:'a',      col:3, row:1, length:2, dir:'V' }, // ↑ на row=0
+      { id:'b',      col:0, row:0, length:2, dir:'H' },
+      { id:'c',      col:3, row:3, length:2, dir:'H' },
+      { id:'d',      col:0, row:4, length:2, dir:'H' },
+    ]
+  },
+  {
+    name: 'Этап 2',
+    exitRow: 2,
+    maxMoves: 10,
+    cars: [
+      { id:'player', col:0, row:2, length:2, dir:'H' },
+      { id:'a',      col:2, row:2, length:2, dir:'V' }, // ↓ на row=3
+      { id:'b',      col:4, row:1, length:2, dir:'V' }, // ↑ на row=0
+      { id:'c',      col:0, row:0, length:3, dir:'H' },
+      { id:'d',      col:0, row:4, length:2, dir:'H' },
+      { id:'e',      col:3, row:3, length:2, dir:'H' },
+    ]
+  },
+  {
+    name: 'Этап 3',
+    exitRow: 2,
+    maxMoves: 12,
+    cars: [
+      { id:'player', col:0, row:2, length:2, dir:'H' },
+      { id:'a',      col:2, row:2, length:2, dir:'V' }, // ↓ после c (нужно (2,4) свободно)
+      { id:'b',      col:3, row:1, length:2, dir:'V' }, // ↑ на row=0
+      { id:'c',      col:1, row:4, length:2, dir:'H' }, // ← на col=0, открывает (2,4) для a
+      { id:'d',      col:4, row:1, length:2, dir:'V' }, // ↑ на row=0
+      { id:'e',      col:0, row:0, length:2, dir:'H' },
+      { id:'f',      col:3, row:4, length:2, dir:'H' },
+    ]
+  },
+  {
+    name: 'Этап 4',
+    exitRow: 2,
+    maxMoves: 12,
+    cars: [
+      { id:'player', col:0, row:2, length:2, dir:'H' },
+      { id:'a',      col:2, row:2, length:2, dir:'V' }, // ↓ после f (нужно (2,4))
+      { id:'b',      col:3, row:2, length:2, dir:'V' }, // ↓ на row=3 (нужно (3,4))
+      { id:'c',      col:4, row:2, length:2, dir:'V' }, // ↑ после d (нужно (4,0))
+      { id:'d',      col:3, row:0, length:2, dir:'H' }, // ← на col=2, открывает (4,0) для c
+      { id:'e',      col:0, row:0, length:2, dir:'H' },
+      { id:'f',      col:1, row:4, length:2, dir:'H' }, // ← на col=0, открывает (2,4) для a
+    ]
+  }
+];
 
-            isSpinning = true;
-            document.getElementById('spinBtn').disabled = true;
-            document.getElementById('result').textContent = '';
+let currentLevel = 0;
+let cars = [];
+let movesDone = 0;
+let infiniteMode = false;
+let dragState = null;
+let timerSec = 5 * 3600 + 53 * 60 + 8;
+let cntSec = 2 * 86400 + 20 * 3600 + 53 * 60 + 7;
 
-            // Случайное количество оборотов (5-10 полных оборотов + случайный угол)
-            const spins = 5 + Math.random() * 5;
-            const extraDegrees = Math.random() * 360;
-            const totalRotation = spins * 360 + extraDegrees;
+// Timer
+setInterval(() => {
+  if (timerSec > 0) timerSec--;
+  document.getElementById('timer').textContent = formatTime(timerSec);
+  if (cntSec > 0) cntSec--;
+  const d = Math.floor(cntSec / 86400);
+  const r = cntSec % 86400;
+  document.getElementById('countdown').textContent = `${d} дня ${formatTime(r)}`;
+}, 1000);
 
-            const finalRotation = currentRotation + (totalRotation * Math.PI / 180);
+function formatTime(s) {
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = s % 60;
+  return `${pad(h)}:${pad(m)}:${pad(ss)}`;
+}
+function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
-            // Анимация вращения
-            const duration = 5000;
-            const startTime = Date.now();
-            const startRotation = currentRotation;
+// ══════════════════════════════════════════
+//  GAME LOGIC
+// ══════════════════════════════════════════
 
-            function animate() {
-                const now = Date.now();
-                const elapsed = now - startTime;
-                const progress = Math.min(elapsed / duration, 1);
+function loadLevel() {
+  movesDone = 0;
+  const lvl = LEVELS[currentLevel];
+  cars = lvl.cars.map(c => ({ ...c }));
 
-                // Easing функция
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                currentRotation = startRotation + (finalRotation - startRotation) * easeOut;
+  updateStageUI();
+  updateMovesUI();
+  buildBoard();
+  renderBlocks();
 
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                drawWheel();
+  document.getElementById('overlay-win').classList.remove('show');
+  document.getElementById('overlay-complete').classList.remove('show');
+}
 
-                if (progress < 1) {
-                    requestAnimationFrame(animate);
-                } else {
-                    currentRotation = finalRotation % (2 * Math.PI);
-                    showResult();
-                }
-            }
+function updateStageUI() {
+  const n = currentLevel + 1;
+  document.getElementById('stage-num').textContent = n;
+  document.getElementById('moves-max').textContent = LEVELS[currentLevel].maxMoves;
 
-            animate();
-        }
+  for (let i = 1; i <= 3; i++) {
+    const step = document.getElementById('step-' + i);
+    const line = document.getElementById('line-' + i);
+    step.className = 'step';
+    if (line) line.className = 'step-line';
 
-        function showResult() {
-            // Определяем выигрышный сектор
-            const sliceAngle = (2 * Math.PI) / prizes.length;
-            const normalizedRotation = (2 * Math.PI - (currentRotation % (2 * Math.PI))) % (2 * Math.PI);
-            const winningIndex = Math.floor(normalizedRotation / sliceAngle) % prizes.length;
-            const winningPrize = prizes[winningIndex];
+    if (i < n) {
+      step.classList.add('done');
+      if (line) line.classList.add('done');
+    } else if (i === n) {
+      step.classList.add('active');
+    }
+  }
+}
 
-            setTimeout(() => {
-                document.getElementById('result').textContent = `🎉 Вы выиграли: ${winningPrize.text} 🎉`;
-                isSpinning = false;
-                document.getElementById('spinBtn').disabled = false;
-            }, 500);
-        }
+function updateMovesUI() {
+  document.getElementById('moves-done').textContent = movesDone;
+}
 
-        // Первоначальная отрисовка колеса
-        drawWheel();
-    </script>
+function buildBoard() {
+  const board = document.getElementById('board');
+  board.innerHTML = '';
+
+  const size = GRID * STEP - GAP;
+  board.style.width = size + 'px';
+  board.style.height = size + 'px';
+  board.style.gridTemplateColumns = `repeat(${GRID}, ${CELL_SIZE}px)`;
+  board.style.gridTemplateRows = `repeat(${GRID}, ${CELL_SIZE}px)`;
+  board.style.gap = GAP + 'px';
+  board.style.position = 'relative';
+
+  for (let r = 0; r < GRID; r++) {
+    for (let c = 0; c < GRID; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      board.appendChild(cell);
+    }
+  }
+
+  // Position exit arrow
+  const exitRow = LEVELS[currentLevel].exitRow;
+  const exitY = exitRow * STEP + CELL_SIZE / 2;
+  document.querySelector('.exit-arrow').style.top = (exitY - 16) + 'px';
+  document.querySelector('.exit-arrow').style.right = '-42px';
+  document.querySelector('.exit-arrow').style.position = 'absolute';
+}
+
+function renderBlocks() {
+  document.querySelectorAll('.block').forEach(e => e.remove());
+  const board = document.getElementById('board');
+
+  cars.forEach(car => {
+    const el = document.createElement('div');
+    el.className = 'block ' + (car.id === 'player' ? 'block-player' : 'block-wood');
+    el.id = 'car-' + car.id;
+
+    const w = car.dir === 'H' ? car.length * STEP - GAP : CELL_SIZE;
+    const h = car.dir === 'V' ? car.length * STEP - GAP : CELL_SIZE;
+
+    el.style.position = 'absolute';
+    el.style.left = car.col * STEP + 'px';
+    el.style.top = car.row * STEP + 'px';
+    el.style.width = w + 'px';
+    el.style.height = h + 'px';
+    el.style.transition = 'filter 0.15s';
+
+    const inner = document.createElement('div');
+    inner.className = 'block-inner';
+
+    if (car.id === 'player') {
+      const skull = document.createElement('div');
+      skull.className = 'skull';
+      skull.innerHTML = '<div class="skull-icon">💀</div>';
+      inner.appendChild(skull);
+    }
+
+    el.appendChild(inner);
+
+    el.addEventListener('mousedown', e => startDrag(e, car.id));
+    el.addEventListener('touchstart', e => startDrag(e, car.id), { passive: false });
+
+    board.appendChild(el);
+  });
+}
+
+function getCarById(id) { return cars.find(c => c.id === id); }
+
+function buildGrid() {
+  const g = Array.from({ length: GRID }, () => Array(GRID).fill(null));
+  cars.forEach(car => {
+    for (let i = 0; i < car.length; i++) {
+      const r = car.dir === 'V' ? car.row + i : car.row;
+      const c = car.dir === 'H' ? car.col + i : car.col;
+      if (r >= 0 && r < GRID && c >= 0 && c < GRID) g[r][c] = car.id;
+    }
+  });
+  return g;
+}
+
+function startDrag(e, carId) {
+  e.preventDefault();
+  const car = getCarById(carId);
+  const board = document.getElementById('board');
+  const bRect = board.getBoundingClientRect();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+
+  dragState = {
+    carId, bRect,
+    startCol: car.col, startRow: car.row,
+    startCX: cx, startCY: cy
+  };
+
+  document.getElementById('car-' + carId).classList.add('dragging');
+  document.addEventListener('mousemove', onDrag);
+  document.addEventListener('mouseup', endDrag);
+  document.addEventListener('touchmove', onDrag, { passive: false });
+  document.addEventListener('touchend', endDrag);
+}
+
+function onDrag(e) {
+  if (!dragState) return;
+  e.preventDefault();
+  const cx = e.touches ? e.touches[0].clientX : e.clientX;
+  const cy = e.touches ? e.touches[0].clientY : e.clientY;
+  const car = getCarById(dragState.carId);
+  const el = document.getElementById('car-' + dragState.carId);
+
+  const dx = cx - dragState.startCX;
+  const dy = cy - dragState.startCY;
+
+  if (car.dir === 'H') {
+    const deltaCells = Math.round(dx / STEP);
+    const maxCol = GRID - car.length;
+    const newCol = Math.max(0, Math.min(maxCol, dragState.startCol + deltaCells));
+
+    const grid = buildGrid();
+    for (let i = 0; i < car.length; i++) grid[car.row][car.col + i] = null;
+
+    let ok = true;
+    for (let i = 0; i < car.length; i++) {
+      const c = newCol + i;
+      if (grid[car.row] && grid[car.row][c] && grid[car.row][c] !== car.id) { ok = false; break; }
+    }
+
+    if (ok) el.style.left = newCol * STEP + 'px';
+
+  } else {
+    const deltaCells = Math.round(dy / STEP);
+    const maxRow = GRID - car.length;
+    const newRow = Math.max(0, Math.min(maxRow, dragState.startRow + deltaCells));
+
+    const grid = buildGrid();
+    for (let i = 0; i < car.length; i++) grid[car.row + i][car.col] = null;
+
+    let ok = true;
+    for (let i = 0; i < car.length; i++) {
+      const r = newRow + i;
+      if (grid[r] && grid[r][car.col] && grid[r][car.col] !== car.id) { ok = false; break; }
+    }
+
+    if (ok) el.style.top = newRow * STEP + 'px';
+  }
+}
+
+function endDrag(e) {
+  if (!dragState) return;
+  const car = getCarById(dragState.carId);
+  const el = document.getElementById('car-' + dragState.carId);
+  el.classList.remove('dragging');
+
+  const newCol = Math.round(parseInt(el.style.left) / STEP);
+  const newRow = Math.round(parseInt(el.style.top) / STEP);
+
+  const movedCols = Math.abs(newCol - dragState.startCol);
+  const movedRows = Math.abs(newRow - dragState.startRow);
+
+  // Validate final position
+  const grid = buildGrid();
+  if (car.dir === 'H') for (let i = 0; i < car.length; i++) grid[car.row][car.col + i] = null;
+  else for (let i = 0; i < car.length; i++) grid[car.row + i][car.col] = null;
+
+  let valid = true;
+  if (car.dir === 'H') {
+    if (newCol < 0 || newCol + car.length > GRID) valid = false;
+    else for (let i = 0; i < car.length; i++) {
+      if (grid[newRow]?.[newCol + i]) { valid = false; break; }
+    }
+  } else {
+    if (newRow < 0 || newRow + car.length > GRID) valid = false;
+    else for (let i = 0; i < car.length; i++) {
+      if (grid[newRow + i]?.[newCol]) { valid = false; break; }
+    }
+  }
+
+  if (valid && (movedCols > 0 || movedRows > 0)) {
+    car.col = newCol;
+    car.row = newRow;
+    el.style.left = newCol * STEP + 'px';
+    el.style.top = newRow * STEP + 'px';
+
+    if (!infiniteMode) {
+      movesDone++;
+      updateMovesUI();
+    }
+
+    checkWin();
+  } else {
+    el.style.left = dragState.startCol * STEP + 'px';
+    el.style.top = dragState.startRow * STEP + 'px';
+  }
+
+  document.removeEventListener('mousemove', onDrag);
+  document.removeEventListener('mouseup', endDrag);
+  document.removeEventListener('touchmove', onDrag);
+  document.removeEventListener('touchend', endDrag);
+  dragState = null;
+}
+
+function checkWin() {
+  const player = getCarById('player');
+  const exitRow = LEVELS[currentLevel].exitRow;
+
+  if (player.row === exitRow && player.col + player.length >= GRID) {
+    // Animate player exiting
+    const el = document.getElementById('car-player');
+    el.style.transition = 'left 0.5s ease';
+    el.style.left = (GRID * STEP + 60) + 'px';
+
+    setTimeout(() => {
+      spawnConfetti();
+      document.getElementById('final-moves').textContent = movesDone;
+
+      if (currentLevel >= LEVELS.length - 1) {
+        document.getElementById('overlay-complete').classList.add('show');
+      } else {
+        document.getElementById('btn-next').style.display = '';
+        document.getElementById('overlay-win').classList.add('show');
+      }
+    }, 500);
+  }
+}
+
+function nextLevel() {
+  currentLevel++;
+  if (currentLevel >= LEVELS.length) {
+    document.getElementById('overlay-complete').classList.add('show');
+    document.getElementById('overlay-win').classList.remove('show');
+  } else {
+    loadLevel();
+  }
+}
+
+function resetLevel() {
+  document.getElementById('overlay-win').classList.remove('show');
+  loadLevel();
+}
+
+function restartAll() {
+  currentLevel = 0;
+  loadLevel();
+  document.getElementById('overlay-complete').classList.remove('show');
+}
+
+function activateInfinite() {
+  infiniteMode = !infiniteMode;
+  const btn = document.querySelector('.boost-panel:nth-child(3) .boost-btn');
+  btn.textContent = infiniteMode ? '✓ Активно' : '♾️ Включить';
+  btn.style.background = infiniteMode
+    ? 'linear-gradient(180deg, #27AE60, #1E8449)'
+    : 'linear-gradient(180deg, #FFB700 0%, #E08000 100%)';
+}
+
+function activateExplosion() {
+  // Remove all non-player blocks adjacent to player
+  const player = getCarById('player');
+  const removeIds = [];
+  cars.forEach(car => {
+    if (car.id === 'player') return;
+    if (car.row === player.row && Math.abs(car.col - (player.col + player.length)) <= 1) {
+      removeIds.push(car.id);
+    }
+  });
+
+  if (removeIds.length === 0) {
+    // Remove any first non-player block for fun
+    const first = cars.find(c => c.id !== 'player');
+    if (first) removeIds.push(first.id);
+  }
+
+  removeIds.forEach(id => {
+    const el = document.getElementById('car-' + id);
+    if (el) {
+      el.style.transition = 'transform 0.4s, opacity 0.4s';
+      el.style.transform = 'scale(2)';
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 400);
+    }
+    cars = cars.filter(c => c.id !== id);
+  });
+
+  spawnConfetti(15);
+}
+
+function spawnConfetti(count = 50) {
+  const colors = ['#FFE040', '#FF8C00', '#E040FB', '#27AE60', '#2196F3', '#FF4444'];
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.left = (20 + Math.random() * 60) + 'vw';
+      el.style.top = '0';
+      el.style.background = colors[Math.floor(Math.random() * colors.length)];
+      el.style.width = (8 + Math.random() * 10) + 'px';
+      el.style.height = (8 + Math.random() * 10) + 'px';
+      el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      el.style.animationDuration = (1.2 + Math.random() * 1.5) + 's';
+      el.style.setProperty('--dx', (Math.random() * 200 - 100) + 'px');
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3000);
+    }, i * 30);
+  }
+}
+
+// START
+loadLevel();
+</script>
 </body>
 </html>
