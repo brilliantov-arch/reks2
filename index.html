@@ -85,43 +85,118 @@ body {
 .top-btn .ico { font-size: 18px; }
 
 .top-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
+  pointer-events: none;
 }
 
+/* Indiana Jones–style title */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@900&display=swap');
+
 .game-title {
-  font-family: 'Russo One', sans-serif;
-  font-size: clamp(20px, 3vw, 28px);
-  background: linear-gradient(180deg, #FFE040 0%, #FF8C00 60%, #FF4500 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  font-family: 'Cinzel Decorative', 'Russo One', serif;
+  font-size: clamp(16px, 2.6vw, 26px);
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg,
+    #FFF5C0 0%,
+    #FFD700 20%,
+    #C8860A 50%,
+    #8B5500 75%,
+    #3D1C00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 2px 4px rgba(255,100,0,0.5));
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.8))
+          drop-shadow(0 2px 6px rgba(180,100,0,0.6));
   line-height: 1.1;
   text-align: center;
+  white-space: nowrap;
 }
 
 .game-subtitle {
+  font-family: 'Cinzel Decorative', 'Russo One', serif;
+  font-size: clamp(9px, 1.2vw, 12px);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #C8860A;
+  font-weight: 700;
+  opacity: 0.9;
+  margin-top: 1px;
+}
+
+/* Player widget — mirrors partner-widget but gold-tinted */
+.player-widget {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.45);
+  border: 1px solid rgba(255,180,0,0.4);
+  border-radius: 12px;
+  padding: 7px 14px 7px 8px;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.player-widget::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,180,0,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+.player-pic {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,180,0,0.7);
+  background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 0 10px rgba(255,180,0,0.4);
+}
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.player-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.player-name {
   font-size: 14px;
-  color: #FF6020;
-  font-weight: 800;
-  letter-spacing: 1px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.2;
+}
+.player-score {
+  font-size: 11px;
+  color: #FFB700;
+  font-weight: 700;
+  display: flex; align-items: center; gap: 3px;
+}
+.player-status {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #FFD700;
+  box-shadow: 0 0 6px #FFD700;
+  flex-shrink: 0;
+  animation: statusPulse 2s ease-in-out infinite;
 }
 
 .top-right {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 8px;
-  padding: 8px 16px;
-  text-align: center;
-  color: #fff;
-  font-size: 13px;
-}
-
-.top-right .time {
-  font-size: 18px;
-  font-weight: 900;
-  color: #FFE040;
+  display: flex;
+  align-items: center;
 }
 
 /* ── STAGE INDICATOR ── */
@@ -154,47 +229,69 @@ body {
   flex-shrink: 0;
 }
 
+/* ── LEVEL PROGRESS BAR ── */
 .stage-steps {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-left: 8px;
-}
-
-.step {
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  border: 3px solid #555;
-  background: rgba(0,0,0,0.4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px;
-  font-weight: 900;
-  color: #aaa;
+  flex: 1;
   position: relative;
+  height: 44px;
+  margin-left: 8px;
+  min-width: 0;
 }
 
-.step.active {
-  background: linear-gradient(135deg, #E91E8C, #C0106B);
-  border-color: #F48FB1;
+/* Full-width grey track */
+.prog-track {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 6px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 3px;
+  transform: translateY(-50%);
+  overflow: hidden;
+}
+/* Coloured fill */
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7B3FA0, #E91E8C);
+  border-radius: 3px;
+  width: 0%;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 6 static checkpoint dots */
+.pdot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  border: 2px solid rgba(255,255,255,0.25);
+  z-index: 2;
+  transition: background 0.4s, border-color 0.4s, transform 0.4s;
+}
+.pdot.p-done {
+  background: rgba(195,155,211,0.7);
+  border-color: #C39BD3;
+}
+
+/* Moving active dot with level number */
+.prog-cursor {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E91E8C, #B8006A);
+  border: 3px solid #F8A8CC;
   color: #fff;
-  box-shadow: 0 0 12px rgba(233,30,140,0.7);
-}
-
-.step.done {
-  background: linear-gradient(135deg, #888, #666);
-  border-color: #aaa;
-  color: #fff;
-}
-
-.step-line {
-  width: 20px; height: 3px;
-  background: #444;
-}
-
-.step-line.done { background: #888; }
-
-.step-gift {
-  font-size: 20px;
+  font-size: 13px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3;
+  box-shadow: 0 0 14px 3px rgba(233,30,140,0.70),
+              0 0 28px 2px rgba(233,30,140,0.30);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
 
 .surrender-btn {
@@ -599,38 +696,86 @@ body {
 
 /* COMPLETE CARD */
 .complete-card {
-  background: linear-gradient(180deg, #1a3a2a, #0f2018);
-  border: 3px solid #E8A020;
-  border-radius: 20px;
-  padding: 40px 48px;
+  background: linear-gradient(160deg, #1a0a35 0%, #0f1f3a 50%, #0a2015 100%);
+  border: 3px solid rgba(255,215,0,0.7);
+  border-radius: 24px;
+  padding: 36px 48px 40px;
   text-align: center;
-  box-shadow: 0 0 60px rgba(200,140,0,0.4);
-  animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 80px rgba(200,140,0,0.5), 0 0 30px rgba(233,30,140,0.3);
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  max-width: 380px;
+  width: 90vw;
 }
 
-.trophy { font-size: 80px; margin-bottom: 16px; filter: drop-shadow(0 0 20px gold); animation: trophyGlow 2s ease-in-out infinite; }
+.complete-trophies {
+  font-size: 80px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 0 24px gold);
+  animation: trophyGlow 1.8s ease-in-out infinite;
+  display: block;
+}
 @keyframes trophyGlow {
-  0%,100% { filter: drop-shadow(0 0 20px gold); }
-  50% { filter: drop-shadow(0 0 40px gold); }
+  0%,100% { filter: drop-shadow(0 0 20px gold) drop-shadow(0 0 40px #FF8C00); transform: scale(1); }
+  50% { filter: drop-shadow(0 0 40px gold) drop-shadow(0 0 70px #FFE040); transform: scale(1.08); }
 }
 
 .complete-title {
-  font-family: 'Russo One', sans-serif;
-  font-size: 28px;
-  background: linear-gradient(180deg, #FFE040, #FF8C00);
+  font-family: 'Cinzel Decorative', 'Russo One', serif;
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  background: linear-gradient(180deg, #FFF5C0 0%, #FFD700 40%, #C8860A 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
-.complete-dots {
-  display: flex; gap: 10px; justify-content: center; margin: 16px 0;
+.complete-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.80);
+  font-weight: 700;
+  line-height: 1.5;
+  margin-bottom: 14px;
 }
 
-.complete-dot {
-  width: 14px; height: 14px; border-radius: 50%;
-  background: #FFB700;
-  box-shadow: 0 0 8px gold;
+.complete-stars {
+  font-size: 22px;
+  font-weight: 900;
+  color: #FFD700;
+  text-shadow: 0 0 14px rgba(255,215,0,0.7);
+  margin-bottom: 14px;
 }
+
+.complete-divider {
+  width: 60%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255,215,0,0.5), transparent);
+  margin: 0 auto 14px;
+}
+
+.complete-msg {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.complete-play-btn {
+  background: linear-gradient(135deg, #E91E8C, #B8006A);
+  border: none;
+  border-radius: 14px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  padding: 14px 36px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  width: 100%;
+  box-shadow: 0 4px 20px rgba(233,30,140,0.5);
+  transition: filter 0.2s, transform 0.15s;
+}
+.complete-play-btn:hover { filter: brightness(1.12); }
+.complete-play-btn:active { transform: translateY(2px); }
 
 /* ── MATCHMAKING OVERLAY ── */
 #overlay-matchmaking {
@@ -1137,6 +1282,11 @@ body {
   box-shadow: 0 0 10px rgba(200,0,255,0.5), inset 0 2px 0 rgba(255,150,255,0.4);
 }
 
+.replay-mini-block.moved {
+  box-shadow: 0 0 0 3px #FFE040, 0 0 18px rgba(255,224,64,0.8) !important;
+  z-index: 5;
+}
+
 .replay-controls {
   display: flex;
   align-items: center;
@@ -1537,6 +1687,148 @@ body {
   40%  { transform: scale(1.4); color: #4AFF80; }
   100% { transform: scale(1); color: #FFB700; }
 }
+
+/* ── WELCOME MODAL ── */
+.welcome-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 500;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  padding: 16px;
+}
+.welcome-modal.show { display: flex; }
+
+.welcome-card {
+  background: linear-gradient(160deg, #1a0a05 0%, #0f1a08 50%, #0a1225 100%);
+  border: 2px solid rgba(255,183,0,0.5);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+  overflow: hidden;
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 60px rgba(180,100,0,0.4), 0 0 120px rgba(0,0,0,0.8);
+}
+
+.welcome-banner {
+  position: relative;
+  background: linear-gradient(180deg, #0a1a08 0%, #142d10 100%);
+  padding: 32px 24px 20px;
+  border-bottom: 1px solid rgba(255,183,0,0.2);
+  overflow: hidden;
+}
+.welcome-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: 
+    radial-gradient(ellipse at 30% 60%, rgba(80,160,40,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 40%, rgba(255,140,0,0.10) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.welcome-jungle {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 4px;
+  filter: drop-shadow(0 4px 12px rgba(0,180,0,0.4));
+  animation: jungleFloat 3s ease-in-out infinite;
+}
+@keyframes jungleFloat {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.welcome-title-wrap {
+  position: relative;
+}
+.welcome-title {
+  font-family: 'Cinzel Decorative', 'Russo One', serif;
+  font-size: clamp(18px, 5vw, 24px);
+  font-weight: 900;
+  letter-spacing: 1px;
+  background: linear-gradient(180deg, #FFF5C0 0%, #FFD700 30%, #C8860A 70%, #3D1C00 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.9));
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+.welcome-title-sub {
+  font-family: 'Cinzel Decorative', 'Russo One', serif;
+  font-size: clamp(9px, 2.5vw, 12px);
+  letter-spacing: 3px;
+  color: rgba(200,134,10,0.9);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.welcome-gold-bar {
+  font-size: 38px;
+  margin: 10px 0 0;
+  animation: goldPulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 12px rgba(255,215,0,0.6));
+}
+@keyframes goldPulse {
+  0%,100% { filter: drop-shadow(0 0 10px rgba(255,215,0,0.5)); transform: scale(1) rotate(-5deg); }
+  50%      { filter: drop-shadow(0 0 22px rgba(255,215,0,0.9)); transform: scale(1.1) rotate(5deg); }
+}
+
+.welcome-body {
+  padding: 22px 28px 28px;
+}
+
+.welcome-story {
+  font-size: 15px;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+.welcome-story b { color: #FFD700; }
+
+.welcome-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 22px;
+  text-align: left;
+}
+.welcome-feat {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,183,0,0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+}
+.welcome-feat-ico { font-size: 22px; flex-shrink: 0; }
+
+.welcome-start-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #C8860A 0%, #FFD700 50%, #C8860A 100%);
+  background-size: 200% 100%;
+  border: none;
+  border-radius: 14px;
+  color: #1a0a00;
+  font-family: 'Cinzel Decorative', 'Russo One', serif;
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  padding: 16px 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(200,134,10,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: filter 0.2s, transform 0.15s, background-position 0.4s;
+  animation: btnShimmer 2.5s ease-in-out infinite;
+}
+@keyframes btnShimmer {
+  0%,100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+.welcome-start-btn:hover  { filter: brightness(1.12); transform: translateY(-1px); }
+.welcome-start-btn:active { transform: translateY(2px); }
 </style>
 </head>
 <body>
@@ -1773,15 +2065,21 @@ body {
 <div class="top-bar">
   <div class="top-left">
     <div class="top-btn" onclick="openRules()"><span class="ico">🏆</span> Правила и призы</div>
-    <div class="top-btn"><span class="ico">💬</span> Отзывы</div>
   </div>
   <div class="top-center">
-    <div class="game-title">Джунгли Зовут</div>
-    <div class="game-subtitle">Испытание</div>
+    <div class="game-title">Джунгли Зовут 2</div>
+    <div class="game-subtitle">Новое испытание</div>
   </div>
   <div class="top-right">
-    <div>До итогов финала:</div>
-    <div class="time" id="countdown">2 дня 20:53:07</div>
+    <div class="player-widget">
+      <div class="player-pic" id="player-pic">🧑</div>
+      <div class="player-info">
+        <div class="player-label">Игрок</div>
+        <div class="player-name" id="player-name-widget">Вы</div>
+        <div class="player-score"><span>⭐</span><span id="player-pts">0</span></div>
+      </div>
+      <div class="player-status"></div>
+    </div>
   </div>
 </div>
 
@@ -1789,15 +2087,7 @@ body {
 <div class="stage-bar">
   <div class="stage-badge">🪙</div>
   <div class="stage-text">Вы на <b id="stage-num">1</b> этапе<br>«Испытания»</div>
-  <div class="stage-steps">
-    <div class="step active" id="step-1">1</div>
-    <div class="step-line" id="line-1"></div>
-    <div class="step" id="step-2">2</div>
-    <div class="step-line" id="line-2"></div>
-    <div class="step" id="step-3">3</div>
-    <div class="step-line" id="line-3"></div>
-    <div class="step" id="step-4"><span class="step-gift">🎁</span></div>
-  </div>
+  <div class="stage-steps" id="stage-steps-wrap"></div>
   <button class="surrender-btn" style="display:none" onclick="resetLevel()"><span class="flag">⚑</span> Сдаться</button>
 
   <!-- PARTNER WIDGET -->
@@ -1858,7 +2148,7 @@ body {
       <button class="boost-btn" onclick="activateExplosion()">
         <span>💥</span> Включить
       </button>
-      <div class="boost-price">9 ФМ</div>
+      <div class="boost-price">5 ходов</div>
     </div>
   </div>
 </div>
@@ -1866,8 +2156,8 @@ body {
 <!-- WIN OVERLAY -->
 <div class="overlay" id="overlay-win">
   <div class="win-card">
-    <div class="win-stars">⭐⭐⭐</div>
-    <div class="win-title">УРОВЕНЬ ПРОЙДЕН!</div>
+    <div class="win-stars" id="win-stars-display">⭐⭐⭐</div>
+    <div class="win-title">УРОВЕНЬ <span id="win-level-num">1</span> ПРОЙДЕН!</div>
     <div class="win-sub">Ходов: <strong id="final-moves">0</strong></div>
 
     <!-- REPLAY LINK -->
@@ -1939,18 +2229,48 @@ body {
   </div>
 </div>
 
+<!-- WELCOME MODAL -->
+<div class="welcome-modal show" id="welcome-modal">
+  <div class="welcome-card">
+    <div class="welcome-banner">
+      <div class="welcome-jungle">🌴🐆🌿</div>
+      <div class="welcome-title-wrap">
+        <div class="welcome-title">Джунгли Зовут 2</div>
+        <div class="welcome-title-sub">Новое испытание</div>
+      </div>
+      <div class="welcome-gold-bar">🪙</div>
+    </div>
+    <div class="welcome-body">
+      <p class="welcome-story">
+        Тебя ждёт <b>новое захватывающее путешествие</b> в самое сердце джунглей!<br><br>
+        Легендарный <b>слиток золота</b> скрыт за непроходимыми лабиринтами. Только самый ловкий и хитрый исследователь сможет провести машину к заветному выходу.
+      </p>
+      <div class="welcome-features">
+        <div class="welcome-feat"><span class="welcome-feat-ico">🗺️</span>25 уровней нарастающей сложности</div>
+        <div class="welcome-feat"><span class="welcome-feat-ico">⏱️</span>Таймер сжимается с каждым уровнем</div>
+        <div class="welcome-feat"><span class="welcome-feat-ico">⭐</span>Собирай звёзды — решай быстрее</div>
+        <div class="welcome-feat"><span class="welcome-feat-ico">💥</span>Взрывай преграды на своём пути</div>
+      </div>
+      <button class="welcome-start-btn" onclick="closeWelcome()">
+        ➤ Начать экспедицию
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- COMPLETE OVERLAY -->
 <div class="overlay" id="overlay-complete">
-  <div class="complete-card">
-    <div class="trophy">🏆</div>
-    <div class="complete-title">Все испытания<br>пройдены!</div>
-    <div class="complete-dots">
-      <div class="complete-dot"></div>
-      <div class="complete-dot"></div>
-      <div class="complete-dot"></div>
-      <div class="complete-dot"></div>
-    </div>
-    <button class="win-btn win-btn-next" onclick="restartAll()" style="margin-top:8px;">🔄 Играть снова</button>
+  <canvas id="fireworks-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:1;width:100%;height:100%;"></canvas>
+  <div class="complete-card" style="position:relative;z-index:2;">
+    <div class="complete-trophies">🏆</div>
+    <div class="complete-title">ПОЗДРАВЛЯЕМ!</div>
+    <div class="complete-sub">Ты прошёл все 25 уровней<br>«Джунгли Зовут 2»!</div>
+    <div class="complete-stars" id="complete-stars-total">⭐ 0 звёзд</div>
+    <div class="complete-divider"></div>
+    <div class="complete-msg">Ты настоящий герой джунглей 🌿<br>Готов к новому испытанию?</div>
+    <button class="complete-play-btn" onclick="restartAll()">
+      <span>🔄</span> Сыграть ещё раз
+    </button>
   </div>
 </div>
 
@@ -2053,16 +2373,84 @@ function startFromMatchmaking() {
 // ══════════════════════════════════════════
 
 // Known solutions per level index (sequences of moves: {id, col, row})
-const LEVEL_SOLUTIONS = [
-  // L1: a↑ row=0, player→ col=3
-  [ {id:'a', col:3, row:0}, {id:'player', col:3, row:2} ],
-  // L2: a↓ row=3, b↑ row=0, player→ col=3
-  [ {id:'a', col:2, row:3}, {id:'b', col:4, row:0}, {id:'player', col:3, row:2} ],
-  // L3: c← col=0, a↓ row=3, b↑ row=0, d↑ row=0, player→ col=3
-  [ {id:'c', col:0, row:4}, {id:'a', col:2, row:3}, {id:'b', col:3, row:0}, {id:'d', col:4, row:0}, {id:'player', col:3, row:2} ],
-  // L4: f← col=0, a↓ row=3, b↓ row=3, d← col=2, c↑ row=0, player→ col=3
-  [ {id:'f', col:0, row:4}, {id:'a', col:2, row:3}, {id:'b', col:3, row:3}, {id:'d', col:2, row:0}, {id:'c', col:4, row:0}, {id:'player', col:3, row:2} ],
-];
+// ── BFS Solver (runs in browser to find real solution path) ──────────────
+const _G = 5;
+function _key(state){ return state.map(c=>c.id+c.col+','+c.row).join('|'); }
+
+function _moves(state) {
+  const occ = new Set();
+  state.forEach(c => {
+    for (let i = 0; i < c.length; i++)
+      occ.add(c.dir==='H' ? c.row+','+( c.col+i) : (c.row+i)+','+c.col);
+  });
+  const results = [];
+  state.forEach((car, idx) => {
+    const mine = new Set();
+    for (let i = 0; i < car.length; i++)
+      mine.add(car.dir==='H' ? car.row+','+(car.col+i) : (car.row+i)+','+car.col);
+    const other = new Set([...occ].filter(x => !mine.has(x)));
+    if (car.dir === 'H') {
+      for (let nc = car.col-1; nc >= 0; nc--) {
+        if (other.has(car.row+','+nc)) break;
+        const ns = state.map((c,i) => i===idx ? {...c,col:nc} : {...c});
+        results.push(ns);
+      }
+      for (let nc = car.col+1; nc <= _G-car.length; nc++) {
+        if (other.has(car.row+','+(nc+car.length-1))) break;
+        const ns = state.map((c,i) => i===idx ? {...c,col:nc} : {...c});
+        results.push(ns);
+      }
+    } else {
+      for (let nr = car.row-1; nr >= 0; nr--) {
+        if (other.has(nr+','+car.col)) break;
+        const ns = state.map((c,i) => i===idx ? {...c,row:nr} : {...c});
+        results.push(ns);
+      }
+      for (let nr = car.row+1; nr <= _G-car.length; nr++) {
+        if (other.has((nr+car.length-1)+','+car.col)) break;
+        const ns = state.map((c,i) => i===idx ? {...c,row:nr} : {...c});
+        results.push(ns);
+      }
+    }
+  });
+  return results;
+}
+
+function _won(state) {
+  const p = state.find(c => c.id==='player');
+  return p && p.dir==='H' && p.col + p.length >= _G;
+}
+
+function bfsSolve(levelIdx) {
+  const init = LEVELS[levelIdx].cars.map(c => ({...c}));
+  if (_won(init)) return [init];
+  const visited = new Map([[_key(init), null]]);
+  const queue = [init];
+  let found = null;
+  outer: while (queue.length) {
+    const cur = queue.shift();
+    for (const next of _moves(cur)) {
+      const k = _key(next);
+      if (visited.has(k)) continue;
+      visited.set(k, cur);
+      if (_won(next)) { found = next; break outer; }
+      queue.push(next);
+    }
+  }
+  if (!found) return [init]; // unsolvable (shouldn't happen)
+  // Reconstruct path
+  const path = [];
+  let s = found;
+  while (s) { path.unshift(s); s = visited.get(_key(s)); }
+  return path;
+}
+
+// Cache so we don't re-solve the same level twice
+const _solveCache = {};
+function getSolvedPath(levelIdx) {
+  if (!_solveCache[levelIdx]) _solveCache[levelIdx] = bfsSolve(levelIdx);
+  return _solveCache[levelIdx];
+}
 
 // Fake solve times (seconds)
 const FAKE_TIMES = [18, 25, 31, 42, 55, 67, 74, 88];
@@ -2076,33 +2464,26 @@ const RM_GAP   = 3;
 const RM_STEP  = RM_CELL + RM_GAP;
 
 function buildReplayStates(levelIdx) {
-  const lvl  = LEVELS[levelIdx];
-  const sol  = LEVEL_SOLUTIONS[levelIdx];
-  // deep clone initial state
-  let state  = lvl.cars.map(c => ({...c}));
-  const snapshots = [ state.map(c => ({...c})) ]; // step 0 = initial
-
-  sol.forEach(move => {
-    state = state.map(c => c.id === move.id ? {...c, col: move.col, row: move.row} : {...c});
-    snapshots.push(state.map(c => ({...c})));
-  });
-  return snapshots;
+  // BFS-solve the level and return array of car-position snapshots
+  return getSolvedPath(levelIdx);
 }
 
-function renderReplayBoard(state) {
+function renderReplayBoard(state, highlightId) {
   const board = document.getElementById('rm-board');
-  // Remove existing blocks (keep cells)
   board.querySelectorAll('.replay-mini-block').forEach(e => e.remove());
 
   state.forEach(car => {
     const el = document.createElement('div');
-    el.className = 'replay-mini-block ' + (car.id === 'player' ? 'player' : 'wood');
+    const isPlayer = car.id === 'player';
+    const isHighlight = car.id === highlightId;
+    el.className = 'replay-mini-block ' + (isPlayer ? 'player' : 'wood') + (isHighlight ? ' moved' : '');
     const w = car.dir === 'H' ? car.length * RM_STEP - RM_GAP : RM_CELL;
     const h = car.dir === 'V' ? car.length * RM_STEP - RM_GAP : RM_CELL;
     el.style.cssText = `
       width:${w}px; height:${h}px;
       left:${car.col * RM_STEP}px;
       top:${car.row * RM_STEP}px;
+      transition: left 0.35s ease, top 0.35s ease;
     `;
     board.appendChild(el);
   });
@@ -2129,19 +2510,18 @@ function buildReplayBoard(levelIdx) {
 
 function openReplay() {
   const lvlIdx   = currentLevel;
-  const sol      = LEVEL_SOLUTIONS[lvlIdx];
   const fakeTime = FAKE_TIMES[Math.floor(Math.random() * FAKE_TIMES.length)];
-  const fakeMoves = sol.length;
 
   replayStates  = buildReplayStates(lvlIdx);
   replayCurrent = 0;
+  const solMoves = replayStates.length - 1;
 
   // Header
-  document.getElementById('rm-avatar').textContent  = matchedPlayer ? matchedPlayer.emoji : '🧑';
-  document.getElementById('rm-name').textContent    = matchedPlayer ? matchedPlayer.name  : 'Соперник';
+  document.getElementById('rm-avatar').textContent  = matchedPlayer ? matchedPlayer.emoji : '🤖';
+  document.getElementById('rm-name').textContent    = matchedPlayer ? matchedPlayer.name  : 'ИИ Соперник';
   document.getElementById('rm-level').textContent   = lvlIdx + 1;
-  document.getElementById('rm-moves-val').textContent  = fakeMoves;
-  document.getElementById('rm-rating-val').textContent = matchedPlayer ? matchedPlayer.rating : '—';
+  document.getElementById('rm-moves-val').textContent  = solMoves;
+  document.getElementById('rm-rating-val').textContent = matchedPlayer ? matchedPlayer.rating : '★★★';
   document.getElementById('rm-time-val').textContent   = fakeTime + 'с';
 
   // Build dots
@@ -2168,11 +2548,26 @@ function openReplay() {
   setTimeout(() => startReplayAutoPlay(), 600);
 }
 
+function findMovedCar(prev, next) {
+  // Returns {id, dir, delta} of the car that changed position
+  for (let i = 0; i < prev.length; i++) {
+    if (prev[i].col !== next[i].col || prev[i].row !== next[i].row) {
+      const dc = next[i].col - prev[i].col;
+      const dr = next[i].row - prev[i].row;
+      const arrow = dc > 0 ? '→' : dc < 0 ? '←' : dr > 0 ? '↓' : '↑';
+      const label = prev[i].id === 'player' ? '🚗' + arrow : prev[i].id.toUpperCase() + arrow;
+      return { id: prev[i].id, label };
+    }
+  }
+  return null;
+}
+
 function startReplayAutoPlay() {
   replayCurrent = 0;
-  renderReplayBoard(replayStates[0]);
+  renderReplayBoard(replayStates[0], null);
   updateReplayDots(0);
-  document.getElementById('rm-board-title').textContent = 'Начало';
+  const total = replayStates.length - 1;
+  document.getElementById('rm-board-title').textContent = total > 0 ? `0 из ${total} ходов` : 'Уже готово!';
 
   replayAutoTimer = setInterval(() => {
     if (replayCurrent >= replayStates.length - 1) {
@@ -2181,15 +2576,18 @@ function startReplayAutoPlay() {
       showReplayResult();
       return;
     }
+    const prev = replayStates[replayCurrent];
     replayCurrent++;
-    renderReplayBoard(replayStates[replayCurrent]);
+    const cur  = replayStates[replayCurrent];
+    const moved = findMovedCar(prev, cur);
+    renderReplayBoard(cur, moved ? moved.id : null);
     updateReplayDots(replayCurrent);
-    showMoveFlash('Ход ' + replayCurrent);
+    if (moved) showMoveFlash(moved.label);
     document.getElementById('rm-board-title').textContent =
       replayCurrent < replayStates.length - 1
-        ? `Ход ${replayCurrent} из ${replayStates.length - 1}`
+        ? `${replayCurrent} из ${total} ходов`
         : 'Финиш! 🎉';
-  }, 900); // средняя скорость
+  }, 750);
 }
 
 function showMoveFlash(text) {
@@ -2252,13 +2650,26 @@ function replayAuto() {} // kept for compat
 
 // Auto-start matchmaking on page load
 window.addEventListener('DOMContentLoaded', () => {
-  setTimeout(runMatchmaking, 400);
+  // Matchmaking starts when player dismisses the welcome popup
 });
+
+function closeWelcome() {
+  const m = document.getElementById('welcome-modal');
+  m.style.transition = 'opacity 0.4s';
+  m.style.opacity = '0';
+  setTimeout(() => {
+    m.classList.remove('show');
+    m.style.opacity = '';
+    runMatchmaking();
+  }, 400);
+}
 
 function openRules()  { document.getElementById('rules-modal').classList.add('show'); }
 function closeRules() { document.getElementById('rules-modal').classList.remove('show'); }
 
 // ══════════════════════════════════════════
+
+let totalPlayerStars = 0;  // accumulated stars
 
 const GRID = 5;   // 5x5 grid
 const CELL_SIZE = 90;
@@ -2278,59 +2689,231 @@ const STEP = CELL_SIZE + GAP;
 //  L4: 6 ходов — f←, a↓, b↓, d←, c↑, player→
 // ══════════════════════════════════════════
 const LEVELS = [
-  {
-    name: 'Этап 1',
-    exitRow: 2,
-    maxMoves: 10,
-    cars: [
-      { id:'player', col:1, row:2, length:2, dir:'H' },
-      { id:'a',      col:3, row:1, length:2, dir:'V' }, // ↑ на row=0
-      { id:'b',      col:0, row:0, length:2, dir:'H' },
-      { id:'c',      col:3, row:3, length:2, dir:'H' },
-      { id:'d',      col:0, row:4, length:2, dir:'H' },
-    ]
-  },
-  {
-    name: 'Этап 2',
-    exitRow: 2,
-    maxMoves: 10,
-    cars: [
-      { id:'player', col:0, row:2, length:2, dir:'H' },
-      { id:'a',      col:2, row:2, length:2, dir:'V' }, // ↓ на row=3
-      { id:'b',      col:4, row:1, length:2, dir:'V' }, // ↑ на row=0
-      { id:'c',      col:0, row:0, length:3, dir:'H' },
-      { id:'d',      col:0, row:4, length:2, dir:'H' },
-      { id:'e',      col:3, row:3, length:2, dir:'H' },
-    ]
-  },
-  {
-    name: 'Этап 3',
-    exitRow: 2,
-    maxMoves: 12,
-    cars: [
-      { id:'player', col:0, row:2, length:2, dir:'H' },
-      { id:'a',      col:2, row:2, length:2, dir:'V' }, // ↓ после c (нужно (2,4) свободно)
-      { id:'b',      col:3, row:1, length:2, dir:'V' }, // ↑ на row=0
-      { id:'c',      col:1, row:4, length:2, dir:'H' }, // ← на col=0, открывает (2,4) для a
-      { id:'d',      col:4, row:1, length:2, dir:'V' }, // ↑ на row=0
-      { id:'e',      col:0, row:0, length:2, dir:'H' },
-      { id:'f',      col:3, row:4, length:2, dir:'H' },
-    ]
-  },
-  {
-    name: 'Этап 4',
-    exitRow: 2,
-    maxMoves: 12,
-    cars: [
-      { id:'player', col:0, row:2, length:2, dir:'H' },
-      { id:'a',      col:2, row:2, length:2, dir:'V' }, // ↓ после f (нужно (2,4))
-      { id:'b',      col:3, row:2, length:2, dir:'V' }, // ↓ на row=3 (нужно (3,4))
-      { id:'c',      col:4, row:2, length:2, dir:'V' }, // ↑ после d (нужно (4,0))
-      { id:'d',      col:3, row:0, length:2, dir:'H' }, // ← на col=2, открывает (4,0) для c
-      { id:'e',      col:0, row:0, length:2, dir:'H' },
-      { id:'f',      col:1, row:4, length:2, dir:'H' }, // ← на col=0, открывает (2,4) для a
-    ]
-  }
+  // ─── НОВИЧОК 1-5 ───
+  { name:'Уровень 1', exitRow:2, maxMoves:8, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 2', exitRow:2, maxMoves:8, cars:[
+    {id:'player',col:1,row:2,length:2,dir:'H'},
+    {id:'a',col:4,row:0,length:2,dir:'V'},
+    {id:'b',col:0,row:0,length:2,dir:'H'},
+    {id:'c',col:0,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 3', exitRow:2, maxMoves:8, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:2,row:0,length:2,dir:'H'},
+    {id:'c',col:0,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 4', exitRow:2, maxMoves:10, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:2,row:0,length:2,dir:'H'},
+    {id:'c',col:0,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 5', exitRow:2, maxMoves:10, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:3,row:2,length:2,dir:'V'},
+    {id:'c',col:0,row:4,length:2,dir:'H'}
+  ]},
+  // ─── ЛЁГКИЙ 6-10 ───
+  { name:'Уровень 6', exitRow:2, maxMoves:10, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:2,row:0,length:2,dir:'H'},
+    {id:'c',col:3,row:2,length:2,dir:'V'},
+    {id:'d',col:0,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 7', exitRow:2, maxMoves:10, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:2,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:0,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 8', exitRow:2, maxMoves:12, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:2,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 9', exitRow:2, maxMoves:12, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:1,row:0,length:2,dir:'H'},
+    {id:'c',col:3,row:2,length:2,dir:'V'},
+    {id:'d',col:0,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:4,length:2,dir:'H'},
+    {id:'f',col:2,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 10', exitRow:2, maxMoves:12, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:3,row:2,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:2,length:2,dir:'V'},
+    {id:'e',col:3,row:4,length:2,dir:'H'}
+  ]},
+  // ─── СРЕДНИЙ 11-15 ───
+  { name:'Уровень 11', exitRow:2, maxMoves:14, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:3,row:2,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:0,row:4,length:2,dir:'H'},
+    {id:'e',col:4,row:1,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 12', exitRow:2, maxMoves:14, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:3,row:2,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:0,row:3,length:2,dir:'H'},
+    {id:'e',col:4,row:2,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 13', exitRow:2, maxMoves:14, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:1,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:0,length:2,dir:'H'},
+    {id:'f',col:0,row:3,length:2,dir:'V'},
+    {id:'g',col:3,row:4,length:2,dir:'H'},
+    {id:'h',col:3,row:3,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 14', exitRow:2, maxMoves:16, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:2,length:2,dir:'V'},
+    {id:'c',col:4,row:1,length:2,dir:'V'},
+    {id:'d',col:2,row:0,length:2,dir:'H'},
+    {id:'e',col:4,row:3,length:2,dir:'V'},
+    {id:'f',col:0,row:0,length:2,dir:'H'},
+    {id:'g',col:0,row:3,length:2,dir:'H'},
+    {id:'h',col:2,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 15', exitRow:2, maxMoves:16, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:3,length:2,dir:'V'},
+    {id:'f',col:0,row:0,length:2,dir:'H'},
+    {id:'g',col:3,row:4,length:2,dir:'H'},
+    {id:'h',col:3,row:3,length:2,dir:'H'}
+  ]},
+  // ─── СЛОЖНЫЙ 16-20 ───
+  { name:'Уровень 16', exitRow:2, maxMoves:18, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:3,length:2,dir:'V'},
+    {id:'f',col:0,row:0,length:2,dir:'H'},
+    {id:'g',col:3,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 17', exitRow:2, maxMoves:18, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:3,length:2,dir:'V'},
+    {id:'f',col:0,row:0,length:2,dir:'H'},
+    {id:'g',col:3,row:4,length:2,dir:'H'},
+    {id:'h',col:3,row:3,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 18', exitRow:2, maxMoves:18, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:3,length:2,dir:'V'},
+    {id:'f',col:0,row:0,length:2,dir:'H'},
+    {id:'g',col:3,row:4,length:2,dir:'H'},
+    {id:'h',col:1,row:1,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 19', exitRow:2, maxMoves:20, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:2,length:2,dir:'V'},
+    {id:'b',col:3,row:1,length:2,dir:'V'},
+    {id:'c',col:2,row:0,length:2,dir:'H'},
+    {id:'d',col:4,row:0,length:2,dir:'V'},
+    {id:'e',col:0,row:3,length:2,dir:'V'},
+    {id:'f',col:0,row:0,length:2,dir:'H'},
+    {id:'g',col:3,row:4,length:2,dir:'H'},
+    {id:'h',col:3,row:3,length:2,dir:'H'},
+    {id:'i',col:1,row:1,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 20', exitRow:2, maxMoves:20, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:0,row:0,length:2,dir:'V'},
+    {id:'b',col:4,row:0,length:2,dir:'V'},
+    {id:'c',col:3,row:3,length:2,dir:'H'},
+    {id:'d',col:2,row:1,length:2,dir:'V'},
+    {id:'e',col:2,row:3,length:2,dir:'V'},
+    {id:'f',col:1,row:0,length:2,dir:'H'}
+  ]},
+  // ─── ЭКСПЕРТ 21-25 ───
+  { name:'Уровень 21', exitRow:2, maxMoves:22, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:4,length:2,dir:'H'},
+    {id:'b',col:2,row:2,length:2,dir:'V'},
+    {id:'c',col:0,row:0,length:2,dir:'V'},
+    {id:'d',col:4,row:3,length:2,dir:'V'},
+    {id:'e',col:2,row:0,length:2,dir:'V'},
+    {id:'f',col:4,row:1,length:2,dir:'V'},
+    {id:'g',col:1,row:3,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 22', exitRow:2, maxMoves:22, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:4,length:2,dir:'H'},
+    {id:'b',col:2,row:2,length:2,dir:'V'},
+    {id:'c',col:0,row:0,length:2,dir:'V'},
+    {id:'d',col:4,row:3,length:2,dir:'V'},
+    {id:'e',col:2,row:0,length:2,dir:'V'},
+    {id:'f',col:4,row:1,length:2,dir:'V'},
+    {id:'g',col:1,row:3,length:2,dir:'V'},
+    {id:'h',col:3,row:2,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 23', exitRow:2, maxMoves:24, cars:[
+    {id:'player',col:1,row:2,length:2,dir:'H'},
+    {id:'a',col:3,row:0,length:2,dir:'H'},
+    {id:'b',col:4,row:1,length:2,dir:'V'},
+    {id:'c',col:0,row:4,length:2,dir:'H'},
+    {id:'d',col:2,row:4,length:2,dir:'H'},
+    {id:'e',col:0,row:1,length:2,dir:'V'},
+    {id:'f',col:3,row:1,length:2,dir:'V'},
+    {id:'g',col:2,row:0,length:2,dir:'V'}
+  ]},
+  { name:'Уровень 24', exitRow:2, maxMoves:24, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:0,row:0,length:2,dir:'V'},
+    {id:'b',col:4,row:0,length:2,dir:'V'},
+    {id:'c',col:3,row:3,length:2,dir:'H'},
+    {id:'d',col:2,row:1,length:2,dir:'V'},
+    {id:'e',col:2,row:3,length:2,dir:'V'},
+    {id:'f',col:1,row:0,length:2,dir:'H'},
+    {id:'g',col:0,row:4,length:2,dir:'H'}
+  ]},
+  { name:'Уровень 25 — Финал', exitRow:2, maxMoves:28, cars:[
+    {id:'player',col:0,row:2,length:2,dir:'H'},
+    {id:'a',col:2,row:4,length:2,dir:'H'},
+    {id:'b',col:2,row:2,length:2,dir:'V'},
+    {id:'c',col:0,row:0,length:2,dir:'V'},
+    {id:'d',col:4,row:3,length:2,dir:'V'},
+    {id:'e',col:2,row:0,length:2,dir:'V'},
+    {id:'f',col:4,row:1,length:2,dir:'V'},
+    {id:'g',col:1,row:3,length:2,dir:'V'},
+    {id:'h',col:3,row:1,length:2,dir:'V'}
+  ]}
 ];
 
 let currentLevel = 0;
@@ -2338,15 +2921,17 @@ let cars = [];
 let movesDone = 0;
 let infiniteMode = false;
 let dragState = null;
-let cntSec = 2 * 86400 + 20 * 3600 + 53 * 60 + 7;
 
 // ── MOVES SYSTEM ──
 // L1=10, L2=9, L3=8, L4=7 ходов на уровень
-const LEVEL_MOVE_LIMITS = [10, 9, 8, 7];
+const LEVEL_MOVE_LIMITS = [8,8,8,10,10, 10,10,12,12,12, 14,14,14,16,16, 18,18,18,20,20, 22,22,24,24,28];
 let playerMovesPool = 50; // стартовый запас ходов
 let fmBalance = 240;
 
-function getLevelMoveLimit() { return LEVEL_MOVE_LIMITS[currentLevel] || 10; }
+function getLevelMoveLimit() {
+  // Starts at 10 on level 1, decreases by 1 each level, minimum 3
+  return Math.max(3, 10 - currentLevel);
+}
 
 function updateMovesPool() {
   document.getElementById('player-moves-pool').textContent = playerMovesPool;
@@ -2357,11 +2942,13 @@ function updateMovesPool() {
 
 // ── LEVEL TIMER ──
 // L1=300с, L2=290с, L3=280с, L4=270с
-const LEVEL_TIMES = [300, 290, 280, 270];
 let levelTimerSec = 0;
 let levelTimerInterval = null;
 
-function getLevelTime(lvl) { return LEVEL_TIMES[lvl] || 300; }
+// Level 1 = 300s, each next level −5s, minimum 30s
+function getLevelTime(lvl) {
+  return Math.max(30, 300 - lvl * 5);
+}
 
 function startLevelTimer() {
   stopLevelTimer();
@@ -2449,14 +3036,6 @@ function showTimeoutOverlay(prevLevel, cb) {
   }, 2200);
 }
 
-// Countdown (top bar)
-setInterval(() => {
-  if (cntSec > 0) cntSec--;
-  const d = Math.floor(cntSec / 86400);
-  const r = cntSec % 86400;
-  document.getElementById('countdown').textContent = d + ' дня ' + formatTime(r);
-}, 1000);
-
 function formatTime(s) {
   const h = Math.floor(s / 3600);
   const m = Math.floor((s % 3600) / 60);
@@ -2470,6 +3049,9 @@ function pad(n) { return n < 10 ? '0' + n : '' + n; }
 // ══════════════════════════════════════════
 
 function loadLevel() {
+  // Build progress bar on first call
+  if (!document.getElementById('pdot-0')) buildProgressBar();
+
   movesDone = 0;
   const lvl = LEVELS[currentLevel];
   cars = lvl.cars.map(c => ({ ...c }));
@@ -2489,24 +3071,64 @@ function loadLevel() {
   startLevelTimer();
 }
 
+/* ── Progress bar: 6 dots, each covers ~4-5 levels out of 25 ── */
+const PDOT_COUNT = 6;
+const TOTAL_LVLS = 25;
+const CHECKPOINTS = [1, 5, 10, 15, 20, 25];
+
+function buildProgressBar() {
+  const wrap = document.getElementById('stage-steps-wrap');
+  wrap.innerHTML = '';
+
+  // Track + fill
+  const track = document.createElement('div');
+  track.className = 'prog-track';
+  const fill = document.createElement('div');
+  fill.className = 'prog-fill';
+  fill.id = 'prog-fill';
+  track.appendChild(fill);
+  wrap.appendChild(track);
+
+  // 6 static checkpoint dots positioned by %
+  CHECKPOINTS.forEach((lvNum, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'pdot';
+    dot.id = 'pdot-' + i;
+    dot.title = '\u0423\u0440\u043e\u0432\u0435\u043d\u044c ' + lvNum;
+    const pct = (lvNum - 1) / (TOTAL_LVLS - 1) * 100;
+    dot.style.left = pct + '%';
+    wrap.appendChild(dot);
+  });
+
+  // Moving cursor with current level number
+  const cursor = document.createElement('div');
+  cursor.className = 'prog-cursor';
+  cursor.id = 'prog-cursor';
+  cursor.textContent = '1';
+  wrap.appendChild(cursor);
+}
+
 function updateStageUI() {
-  const n = currentLevel + 1;
-  document.getElementById('stage-num').textContent = n;
+  const lvl = currentLevel + 1;
+  document.getElementById('stage-num').textContent = lvl;
   document.getElementById('moves-max').textContent = getLevelMoveLimit();
 
-  for (let i = 1; i <= 3; i++) {
-    const step = document.getElementById('step-' + i);
-    const line = document.getElementById('line-' + i);
-    step.className = 'step';
-    if (line) line.className = 'step-line';
+  const pct = (lvl - 1) / (TOTAL_LVLS - 1) * 100;
 
-    if (i < n) {
-      step.classList.add('done');
-      if (line) line.classList.add('done');
-    } else if (i === n) {
-      step.classList.add('active');
-    }
+  const fill = document.getElementById('prog-fill');
+  if (fill) fill.style.width = pct + '%';
+
+  const cursor = document.getElementById('prog-cursor');
+  if (cursor) {
+    cursor.style.left = pct + '%';
+    cursor.textContent = lvl;
   }
+
+  CHECKPOINTS.forEach((cpLvl, i) => {
+    const dot = document.getElementById('pdot-' + i);
+    if (!dot) return;
+    dot.className = 'pdot' + (lvl > cpLvl ? ' p-done' : '');
+  });
 }
 
 function updateMovesUI() {
@@ -2566,7 +3188,7 @@ function renderBlocks() {
     if (car.id === 'player') {
       const skull = document.createElement('div');
       skull.className = 'skull';
-      skull.innerHTML = '<div class="skull-icon">💀</div>';
+      skull.innerHTML = '<div class="skull-icon">🐱</div>';
       inner.appendChild(skull);
     }
 
@@ -2743,17 +3365,32 @@ function checkWin() {
       spawnConfetti();
       document.getElementById('final-moves').textContent = movesDone;
 
+      // Level number in popup
+      document.getElementById('win-level-num').textContent = currentLevel + 1;
+
+      // Stars display
+      const maxM = getLevelMoveLimit();
+      const starsEarned = movesDone <= Math.floor(maxM * 0.35) ? 3
+                        : movesDone <= Math.floor(maxM * 0.6)  ? 2 : 1;
+      document.getElementById('win-stars-display').textContent = '⭐'.repeat(starsEarned);
+
+      // Award stars and update player widget
+      totalPlayerStars += starsEarned;
+      const ptsEl = document.getElementById('player-pts');
+      if (ptsEl) ptsEl.textContent = totalPlayerStars;
+
       // Populate win card partner info
       if (matchedPlayer) {
         document.getElementById('win-partner-avatar').textContent = matchedPlayer.emoji;
         document.getElementById('win-partner-name').textContent   = matchedPlayer.name;
-        const sol = LEVEL_SOLUTIONS[currentLevel];
+        const solPath = getSolvedPath(currentLevel);
+        const solLen  = solPath.length - 1;
         const fakeTime = FAKE_TIMES[Math.floor(Math.random() * FAKE_TIMES.length)];
         document.getElementById('win-partner-meta').textContent =
-          `прошёл за ${sol.length} ход${sol.length === 1 ? '' : sol.length < 5 ? 'а' : 'ов'} · ${fakeTime}с`;
+          `прошёл за ${solLen} ход${solLen === 1 ? '' : solLen < 5 ? 'а' : 'ов'} · ${fakeTime}с`;
       }
       if (currentLevel >= LEVELS.length - 1) {
-        document.getElementById('overlay-complete').classList.add('show');
+        showComplete();
       } else {
         document.getElementById('btn-next').style.display = '';
         document.getElementById('overlay-win').classList.add('show');
@@ -2765,8 +3402,8 @@ function checkWin() {
 function nextLevel() {
   currentLevel++;
   if (currentLevel >= LEVELS.length) {
-    document.getElementById('overlay-complete').classList.add('show');
     document.getElementById('overlay-win').classList.remove('show');
+    showComplete();
   } else {
     loadLevel();
   }
@@ -2777,10 +3414,109 @@ function resetLevel() {
   loadLevel();
 }
 
+function showComplete() {
+  document.getElementById('complete-stars-total').textContent =
+    '⭐ ' + totalPlayerStars + ' ' + (totalPlayerStars === 1 ? 'звезда' : totalPlayerStars < 5 ? 'звезды' : 'звёзд');
+  document.getElementById('overlay-complete').classList.add('show');
+  launchFireworks();
+}
+
 function restartAll() {
+  stopFireworks();
   currentLevel = 0;
+  totalPlayerStars = 0;
+  const ptsEl = document.getElementById('player-pts');
+  if (ptsEl) ptsEl.textContent = 0;
   loadLevel();
   document.getElementById('overlay-complete').classList.remove('show');
+}
+
+// ── FIREWORKS ──────────────────────────────────────────────────────────────
+let _fwRaf = null;
+const _fwParticles = [];
+
+function launchFireworks() {
+  const canvas = document.getElementById('fireworks-canvas');
+  if (!canvas) return;
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  _fwParticles.length = 0;
+
+  // Burst 8 rockets at intervals
+  let launches = 0;
+  const launch = () => {
+    if (launches >= 8) return;
+    launches++;
+    _burstFirework(ctx, canvas.width, canvas.height);
+    setTimeout(launch, 500 + Math.random() * 600);
+  };
+  launch();
+  _fwAnimate(ctx, canvas);
+}
+
+function _burstFirework(ctx, W, H) {
+  const x = W * (0.15 + Math.random() * 0.7);
+  const y = H * (0.1  + Math.random() * 0.45);
+  const colors = ['#FFE040','#FF4444','#4AFF80','#40C0FF','#E040FB','#FF8C00','#fff','#FFB700'];
+  const color  = colors[Math.floor(Math.random() * colors.length)];
+  const count  = 60 + Math.floor(Math.random() * 40);
+  for (let i = 0; i < count; i++) {
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.3;
+    const speed = 2 + Math.random() * 5;
+    _fwParticles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 1,
+      alpha: 1,
+      color,
+      size: 2 + Math.random() * 3,
+      trail: []
+    });
+  }
+}
+
+function _fwAnimate(ctx, canvas) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (let i = _fwParticles.length - 1; i >= 0; i--) {
+    const p = _fwParticles[i];
+    p.trail.unshift({x: p.x, y: p.y});
+    if (p.trail.length > 6) p.trail.pop();
+    p.x  += p.vx;
+    p.y  += p.vy;
+    p.vy += 0.12;
+    p.vx *= 0.97;
+    p.alpha -= 0.018;
+    if (p.alpha <= 0) { _fwParticles.splice(i, 1); continue; }
+    // Draw trail
+    p.trail.forEach((t, ti) => {
+      ctx.beginPath();
+      ctx.arc(t.x, t.y, p.size * (1 - ti/6) * 0.6, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha * (1 - ti/6) * 0.4;
+      ctx.fill();
+    });
+    // Draw particle
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  if (_fwParticles.length > 0) {
+    _fwRaf = requestAnimationFrame(() => _fwAnimate(ctx, canvas));
+  } else {
+    const canvas2 = document.getElementById('fireworks-canvas');
+    if (canvas2) canvas2.getContext('2d').clearRect(0, 0, canvas2.width, canvas2.height);
+  }
+}
+
+function stopFireworks() {
+  if (_fwRaf) { cancelAnimationFrame(_fwRaf); _fwRaf = null; }
+  _fwParticles.length = 0;
+  const canvas = document.getElementById('fireworks-canvas');
+  if (canvas) canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 }
 
 // ── OUT OF MOVES ──
@@ -2835,6 +3571,16 @@ function buyMoves(amount, cost) {
 // getLevelMoveLimit already defined above; extra moves tracked via window.extraMovesGranted
 
 function activateExplosion() {
+  // Requires 5 moves from pool; show buy popup if insufficient
+  if (playerMovesPool <= 4) {
+    openBuyMoves();
+    return;
+  }
+
+  // Deduct 5 moves
+  playerMovesPool -= 5;
+  updateMovesPool();
+
   // Remove all non-player blocks adjacent to player
   const player = getCarById('player');
   const removeIds = [];
@@ -2846,7 +3592,6 @@ function activateExplosion() {
   });
 
   if (removeIds.length === 0) {
-    // Remove any first non-player block for fun
     const first = cars.find(c => c.id !== 'player');
     if (first) removeIds.push(first.id);
   }
