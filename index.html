@@ -1714,7 +1714,7 @@ body {
 .welcome-banner {
   position: relative;
   background: linear-gradient(180deg, #0a1a08 0%, #142d10 100%);
-  padding: 32px 24px 20px;
+  padding: 18px 24px 14px;
   border-bottom: 1px solid rgba(255,183,0,0.2);
   overflow: hidden;
 }
@@ -1728,9 +1728,9 @@ body {
 }
 
 .welcome-jungle {
-  font-size: 56px;
+  font-size: 40px;
   line-height: 1;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   filter: drop-shadow(0 4px 12px rgba(0,180,0,0.4));
   animation: jungleFloat 3s ease-in-out infinite;
 }
@@ -1763,8 +1763,8 @@ body {
 }
 
 .welcome-gold-bar {
-  font-size: 38px;
-  margin: 10px 0 0;
+  font-size: 30px;
+  margin: 6px 0 0;
   animation: goldPulse 2s ease-in-out infinite;
   filter: drop-shadow(0 0 12px rgba(255,215,0,0.6));
 }
@@ -1774,22 +1774,22 @@ body {
 }
 
 .welcome-body {
-  padding: 22px 28px 28px;
+  padding: 14px 22px 20px;
 }
 
 .welcome-story {
-  font-size: 15px;
+  font-size: 13px;
   color: rgba(255,255,255,0.82);
-  line-height: 1.65;
-  margin-bottom: 18px;
+  line-height: 1.55;
+  margin-bottom: 12px;
 }
 .welcome-story b { color: #FFD700; }
 
 .welcome-features {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 22px;
+  gap: 6px;
+  margin-bottom: 14px;
   text-align: left;
 }
 .welcome-feat {
@@ -1799,8 +1799,8 @@ body {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,183,0,0.15);
   border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 14px;
+  padding: 7px 12px;
+  font-size: 13px;
   color: rgba(255,255,255,0.8);
   font-weight: 600;
 }
@@ -1817,7 +1817,7 @@ body {
   font-size: 17px;
   font-weight: 900;
   letter-spacing: 1px;
-  padding: 16px 24px;
+  padding: 13px 24px;
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(200,134,10,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
   transition: filter 0.2s, transform 0.15s, background-position 0.4s;
@@ -1912,6 +1912,123 @@ body {
   0%   { transform: scale(0.7); opacity: 0; }
   100% { transform: scale(1);   opacity: 1; }
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE RESPONSIVE  (≤ 600px)
+══════════════════════════════════════════════ */
+@media (max-width: 600px) {
+
+  /* ── TOP BAR ── */
+  .top-bar { padding: 6px 10px; }
+  .top-btn  { font-size: 11px; gap: 5px; }
+  .top-btn .ico { font-size: 14px; }
+  .game-title    { font-size: clamp(13px, 4vw, 18px); letter-spacing: 1px; }
+  .game-subtitle { font-size: 8px; letter-spacing: 2px; }
+
+  /* ── PLAYER WIDGET ── */
+  .player-widget { padding: 5px 8px 5px 6px; gap: 6px; }
+  .player-pic    { width: 28px; height: 28px; font-size: 15px; }
+  .player-label  { font-size: 8px; }
+  .player-name   { font-size: 11px; }
+  .player-score  { font-size: 9px; }
+  .player-status { width: 6px; height: 6px; }
+
+  /* ── STAGE BAR ── */
+  .stage-bar { padding: 5px 10px; gap: 8px; }
+  .stage-label { font-size: 11px; }
+  .stage-num   { font-size: 16px; }
+
+  /* ── MAIN LAYOUT: vertical stack board + side panel below ── */
+  .main {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px;
+    overflow-y: auto;
+  }
+
+  /* ── BOARD: scale to fit screen ── */
+  .board-outer { padding: 4px; border-radius: 12px; }
+  .board-inner { padding: 3px; border-radius: 9px; }
+
+  /* ── SIDE PANEL: horizontal row below board ── */
+  .side-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: unset;
+    width: 100%;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .moves-panel,
+  .timer-panel,
+  .boost-panel {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 130px;
+    max-width: 200px;
+    padding: 8px 10px;
+  }
+
+  .moves-label  { font-size: 11px; margin-bottom: 4px; }
+  .moves-count  { font-size: 22px; padding: 5px; }
+  .timer-label  { font-size: 10px; margin-bottom: 4px; }
+  .timer-row    { font-size: 18px; }
+  .timer-ico    { font-size: 16px; }
+  .boost-title  { font-size: 12px; margin-bottom: 6px; }
+  .boost-btn    { font-size: 13px; padding: 8px; }
+  .boost-price  { font-size: 11px; }
+
+  /* ── PARTNER WIDGET ── */
+  .partner-widget { padding: 5px 8px 5px 6px; gap: 6px; }
+
+  /* ── EXIT ARROW ── */
+  .exit-arrow { right: -28px; }
+  .arrow-svg  { font-size: 20px; }
+
+  /* ── WIN CARD ── */
+  .win-card   { padding: 20px 16px; width: 92vw; }
+  .win-stars  { font-size: 32px; }
+  .win-title  { font-size: 18px; }
+  .win-sub    { font-size: 13px; }
+  .win-cheer  { font-size: 13px; }
+  .win-btn    { font-size: 14px; padding: 10px 14px; }
+
+  /* ── REPLAY LINK in win card ── */
+  .replay-link      { padding: 10px 12px; gap: 10px; }
+  .replay-avatar    { width: 36px; height: 36px; font-size: 20px; }
+  .replay-caption   { font-size: 10px; }
+  .replay-name      { font-size: 13px; }
+  .replay-meta      { font-size: 11px; }
+
+  /* ── MODALS: full width ── */
+  .rules-card,
+  .replay-modal-card,
+  .outofmoves-card,
+  .buymoves-card { max-width: 98vw; border-radius: 16px; }
+
+  /* ── COMPLETE OVERLAY ── */
+  .complete-card  { padding: 24px 20px 28px; }
+  .complete-trophies { font-size: 56px; }
+  .complete-title { font-size: 20px; }
+  .complete-sub   { font-size: 13px; }
+  .complete-stars { font-size: 18px; }
+  .complete-msg   { font-size: 12px; }
+  .complete-play-btn { font-size: 15px; padding: 12px 20px; }
+
+  /* ── PROGRESS BAR ── */
+  .prog-track  { height: 6px; }
+  .prog-cursor { width: 28px; height: 28px; font-size: 11px; }
+}
+
+/* ── EXTRA SMALL (≤ 380px) — scale down the board cells via JS-set sizes ── */
+@media (max-width: 380px) {
+  .top-btn .ico { display: none; }  /* icon-only top buttons */
+  .top-btn      { font-size: 10px; }
+  .moves-count  { font-size: 18px; }
+  .timer-row    { font-size: 15px; }
+}
+
 </style>
 </head>
 <body>
@@ -2854,11 +2971,33 @@ function closeTopDay() { document.getElementById('topday-modal').classList.remov
 let totalPlayerStars = 0;  // accumulated stars
 
 const GRID = 5;   // 5x5 grid
-const CELL_SIZE = 90;
 const GAP = 5;
 
-// Cell pixel size including gap
-const STEP = CELL_SIZE + GAP;
+// Dynamic cell size: fit board to screen on mobile
+function computeCellSize() {
+  const screenW = window.innerWidth;
+  const screenH = window.innerHeight;
+  // Available width: screen minus side panel (~190px) minus paddings (~40px)
+  // On mobile (<600px) no side panel — full width minus margins
+  const isMobile = screenW <= 600;
+  const availW = isMobile ? screenW - 32 : Math.min(screenW - 230, 480);
+  // Board needs GRID cells + (GRID-1) gaps, plus outer padding ~20px
+  const maxFromW = Math.floor((availW - 20) / GRID) - GAP;
+  // Available height: screen minus top-bar (~56px) minus stage-bar (~48px) minus side/margins (~120px)
+  const availH = isMobile ? screenH - 240 : screenH - 160;
+  const maxFromH = Math.floor((availH - 20) / GRID) - GAP;
+  return Math.max(48, Math.min(90, maxFromW, maxFromH));
+}
+
+let CELL_SIZE = computeCellSize();
+let STEP = CELL_SIZE + GAP;
+
+window.addEventListener('resize', () => {
+  CELL_SIZE = computeCellSize();
+  STEP = CELL_SIZE + GAP;
+  buildBoard();
+  renderBlocks();
+});
 
 // Levels: exitRow = row index of the exit (right side)
 // Player car must have dir:'H' and reach col+length === GRID
