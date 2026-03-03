@@ -2,87 +2,205 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Пятнашки</title>
+<!-- РСЯ: вставьте ваш скрипт РСЯ здесь -->
+<!-- <script src="//an.yandex.ru/system/context.js" async></script> -->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Oswald:wght@400;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     background: #eeeae4;
     background-image:
       radial-gradient(ellipse at 30% 20%, rgba(255,225,220,0.45) 0%, transparent 50%),
       radial-gradient(ellipse at 70% 80%, rgba(215,210,205,0.45) 0%, transparent 50%);
-    min-height: 100vh;
+    min-height: 100vh; min-height: 100dvh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     font-family: 'Oswald', sans-serif;
+    padding: 16px;
   }
-  .title-wrap { text-align: center; margin-bottom: 28px; }
-  .title { font-size: 56px; font-weight: 700; letter-spacing: 16px; text-transform: uppercase; color: #c07878; text-shadow: 3px 3px 0 rgba(192,120,120,0.18); }
-  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 16px; letter-spacing: 5px; color: #b09090; margin-top: 5px; }
-  .deco { color: #ddb0b0; letter-spacing: 10px; font-size: 15px; margin-top: 8px; }
+
+  .title-wrap { text-align: center; margin-bottom: 20px; }
+  .title { font-size: clamp(28px, 8vw, 56px); font-weight: 700; letter-spacing: clamp(6px, 2vw, 16px); text-transform: uppercase; color: #c07878; text-shadow: 3px 3px 0 rgba(192,120,120,0.18); }
+  .subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(11px, 3vw, 16px); letter-spacing: 5px; color: #b09090; margin-top: 4px; }
+  .deco { color: #ddb0b0; letter-spacing: 8px; font-size: clamp(10px, 2.5vw, 15px); margin-top: 6px; }
 
   .board-outer {
     background: linear-gradient(155deg, #faf6f2 0%, #f0e9e1 50%, #e8ddd5 100%);
-    border-radius: 20px; padding: 20px;
+    border-radius: 20px; padding: clamp(10px, 2.5vw, 20px);
     box-shadow: 0 0 0 2px #d5c5ba, 0 0 0 5px #ece3da, 0 14px 50px rgba(80,40,30,0.18),
       inset 0 2px 6px rgba(255,255,255,0.9), inset 0 -2px 5px rgba(0,0,0,0.05);
+    width: min(500px, 90vw);
   }
   .board-inner {
     background: linear-gradient(145deg, #ddd6cc 0%, #cdc6bc 100%);
-    border-radius: 14px; padding: 9px;
+    border-radius: 14px; padding: clamp(5px, 1.5vw, 9px);
     box-shadow: inset 0 5px 18px rgba(0,0,0,0.15), inset 0 1px 4px rgba(0,0,0,0.1);
   }
-  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 500px; height: 500px; }
+  .board { display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(4px, 1.2vw, 8px); width: 100%; aspect-ratio: 1; }
 
   .tile {
-    cursor: pointer; border-radius: 13px; overflow: hidden;
+    cursor: pointer; border-radius: clamp(7px, 1.8vw, 13px); overflow: hidden;
     transition: transform 0.09s ease, filter 0.09s ease, box-shadow 0.09s ease;
     box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 3px rgba(255,255,255,0.65);
-    user-select: none; position: relative; z-index: 1;
+    user-select: none; -webkit-user-select: none; position: relative; z-index: 1; aspect-ratio: 1;
   }
-  .tile:hover { transform: scale(1.06) translateY(-3px); filter: brightness(1.04); box-shadow: 0 9px 26px rgba(0,0,0,0.17); z-index: 2; }
+  .tile:hover { transform: scale(1.06) translateY(-3px); filter: brightness(1.04); z-index: 2; }
   .tile:active { transform: scale(0.94) translateY(2px); filter: brightness(0.95); transition: all 0.05s; }
-  .tile img { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 12px; pointer-events: none; }
+  .tile img { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: clamp(6px, 1.6vw, 12px); pointer-events: none; transform: scale(0.9); transform-origin: center; }
   .tile.empty { background: radial-gradient(ellipse at 40% 38%, #c2bab2 0%, #b0a8a0 45%, #9e9890 100%); box-shadow: inset 0 5px 18px rgba(0,0,0,0.24); cursor: default; }
   .tile.empty:hover { transform: none; filter: none; }
   .tile.pop { animation: pop 0.2s cubic-bezier(0.34,1.56,0.64,1); }
   @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.09)} 100%{transform:scale(1)} }
 
-  .level-badge {
-    text-align: center; font-size: 11px; letter-spacing: 4px; color: #b09888;
-    text-transform: uppercase; margin-top: 18px; margin-bottom: -4px;
-  }
-  .controls { display: flex; gap: 20px; margin-top: 20px; align-items: center; }
-  .stat { text-align: center; min-width: 80px; }
-  .stat-label { font-size: 10px; letter-spacing: 4px; color: #b09888; text-transform: uppercase; margin-bottom: 2px; }
-  .stat-value { font-size: 38px; font-weight: 700; color: #c07878; line-height: 1; }
+  .level-badge { text-align: center; font-size: clamp(9px, 2vw, 11px); letter-spacing: 3px; color: #b09888; text-transform: uppercase; margin-top: 14px; margin-bottom: -2px; }
+  .controls { display: flex; gap: clamp(12px, 3vw, 20px); margin-top: 14px; align-items: center; }
+  .stat { text-align: center; min-width: 70px; }
+  .stat-label { font-size: clamp(8px, 2vw, 10px); letter-spacing: 3px; color: #b09888; text-transform: uppercase; margin-bottom: 2px; }
+  .stat-value { font-size: clamp(28px, 7vw, 38px); font-weight: 700; color: #c07878; line-height: 1; }
 
   .btn {
     background: linear-gradient(150deg, #d49090, #b87070); color: #fff8f5;
-    border: 2px solid #986060; border-radius: 9px; padding: 12px 28px;
-    font-family: 'Oswald', sans-serif; font-size: 15px; font-weight: 700;
-    letter-spacing: 4px; text-transform: uppercase; cursor: pointer;
-    box-shadow: 3px 4px 0 #885050; transition: all 0.1s; line-height: 1.4; text-align: center;
+    border: 2px solid #986060; border-radius: 9px;
+    padding: clamp(8px, 2vw, 12px) clamp(16px, 4vw, 28px);
+    font-family: 'Oswald', sans-serif; font-size: clamp(11px, 2.5vw, 15px); font-weight: 700;
+    letter-spacing: clamp(2px, 0.8vw, 4px); text-transform: uppercase;
+    cursor: pointer; box-shadow: 3px 4px 0 #885050; transition: all 0.1s;
+    line-height: 1.4; text-align: center; -webkit-tap-highlight-color: transparent;
   }
   .btn:hover { background: linear-gradient(150deg, #e4a0a0, #c88080); transform: translateY(-2px); box-shadow: 3px 6px 0 #885050; }
   .btn:active { transform: translateY(2px); box-shadow: 1px 1px 0 #885050; }
-  .btn-sm {
-    font-size: 11px; padding: 7px 16px; letter-spacing: 2px;
-    background: linear-gradient(150deg, #c8a0a0, #a88080);
-    box-shadow: 2px 3px 0 #885050;
-  }
-  .btn-col { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .btn-sm { font-size: clamp(9px, 2vw, 11px); padding: clamp(5px, 1.2vw, 7px) clamp(10px, 2.5vw, 16px); letter-spacing: 2px; background: linear-gradient(150deg, #c8a0a0, #a88080); box-shadow: 2px 3px 0 #885050; }
+  .btn-col { display: flex; flex-direction: column; gap: 7px; align-items: center; }
 
-  .win-overlay { display: none; position: fixed; inset: 0; background: rgba(238,234,228,0.96); z-index: 200; align-items: center; justify-content: center; flex-direction: column; gap: 22px; backdrop-filter: blur(6px); }
-  .win-overlay.show { display: flex; animation: winIn 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-  @keyframes winIn { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
-  .win-title { font-size: 76px; font-weight: 700; letter-spacing: 12px; color: #c07878; }
-  .win-deco { font-size: 28px; letter-spacing: 12px; color: #ddb0b0; }
-  .win-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; letter-spacing: 4px; color: #b09080; }
+  .fotostrana-link {
+    margin-top: 18px; text-align: center;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(11px, 3vw, 14px); color: #b09080; letter-spacing: 1px;
+  }
+  .fotostrana-link a { color: #c07878; text-decoration: none; border-bottom: 1px solid rgba(192,120,120,0.4); transition: color 0.2s, border-color 0.2s; }
+  .fotostrana-link a:hover { color: #a05050; border-bottom-color: #a05050; }
+
+  /* ===== OVERLAY base ===== */
+  .overlay {
+    display: none; position: fixed; inset: 0; z-index: 300;
+    align-items: center; justify-content: center;
+    background: rgba(238,234,228,0.97);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+  }
+  .overlay.show { display: flex; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from{opacity:0;transform:scale(0.92)} to{opacity:1;transform:scale(1)} }
+
+  /* ===== WELCOME POPUP ===== */
+  .welcome-box {
+    background: linear-gradient(155deg, #faf6f2 0%, #f0e9e1 60%, #e8ddd5 100%);
+    border-radius: 20px; padding: clamp(24px, 6vw, 40px) clamp(20px, 6vw, 48px);
+    box-shadow: 0 0 0 2px #d5c5ba, 0 0 0 5px #ece3da, 0 20px 60px rgba(80,40,30,0.2);
+    text-align: center; max-width: 420px; width: 100%;
+  }
+  .welcome-deco { font-size: clamp(22px, 6vw, 32px); letter-spacing: 12px; color: #ddb0b0; margin-bottom: 10px; }
+  .welcome-title { font-size: clamp(28px, 8vw, 48px); font-weight: 700; letter-spacing: clamp(6px, 2vw, 12px); color: #c07878; text-transform: uppercase; text-shadow: 3px 3px 0 rgba(192,120,120,0.18); }
+  .welcome-subtitle { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(14px, 4vw, 18px); color: #b09090; margin-top: 6px; letter-spacing: 3px; }
+  .welcome-rules {
+    margin: 20px 0; text-align: left;
+    font-family: 'Cormorant Garamond', serif; font-size: clamp(13px, 3.5vw, 16px);
+    color: #7a6055; line-height: 1.7; letter-spacing: 0.5px;
+  }
+  .welcome-rules li { margin-bottom: 6px; padding-left: 4px; }
+  .welcome-levels {
+    display: flex; gap: 8px; justify-content: center; margin: 16px 0;
+    flex-wrap: wrap;
+  }
+  .level-pill {
+    background: linear-gradient(150deg, #f0e0e0, #e8d0d0);
+    border: 1px solid #d5b5b5; border-radius: 20px;
+    padding: 5px 14px; font-size: clamp(9px, 2.5vw, 11px);
+    letter-spacing: 2px; color: #b07070; text-transform: uppercase;
+  }
+  .welcome-fotostrana {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: clamp(11px, 3vw, 13px); color: #b09080; margin-top: 14px;
+  }
+  .welcome-fotostrana a { color: #c07878; text-decoration: none; border-bottom: 1px solid rgba(192,120,120,0.4); }
+  .welcome-fotostrana a:hover { color: #a05050; }
+
+  /* ===== WIN POPUP ===== */
+  .win-box {
+    background: linear-gradient(155deg, #faf6f2 0%, #f0e9e1 60%, #e8ddd5 100%);
+    border-radius: 20px; padding: clamp(20px, 5vw, 36px) clamp(20px, 6vw, 48px);
+    box-shadow: 0 0 0 2px #d5c5ba, 0 0 0 5px #ece3da, 0 20px 60px rgba(80,40,30,0.2);
+    text-align: center; max-width: 460px; width: 100%;
+  }
+  .win-title { font-size: clamp(40px, 12vw, 76px); font-weight: 700; letter-spacing: clamp(6px, 2vw, 12px); color: #c07878; }
+  .win-deco { font-size: clamp(18px, 5vw, 28px); letter-spacing: 10px; color: #ddb0b0; margin: 6px 0; }
+  .win-sub { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: clamp(14px, 4vw, 20px); letter-spacing: 3px; color: #b09080; margin-bottom: 16px; }
+
+  /* РСЯ рекламный блок */
+  .ad-block {
+    width: 100%; max-width: 320px; min-height: 100px;
+    margin: 12px auto;
+    background: linear-gradient(135deg, #f5f0eb, #ede5dc);
+    border: 1px dashed #d5b5b5; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 12px; color: #c0a898; letter-spacing: 1px;
+    overflow: hidden;
+  }
+
+  .win-btns { display: flex; flex-direction: column; gap: 8px; align-items: center; margin-top: 4px; }
 </style>
 </head>
 <body>
 
+<!-- ===== WELCOME POPUP ===== -->
+<div class="overlay show" id="welcomeOverlay">
+  <div class="welcome-box">
+    <div class="welcome-deco">✦ ✦ ✦</div>
+    <div class="welcome-title">Пятнашки</div>
+    <div class="welcome-subtitle">классическая игра-головоломка</div>
+    <ul class="welcome-rules">
+      <li>Передвигайте костяшки, нажимая на них</li>
+      <li>Цель — выстроить числа от 1 до 15 по порядку</li>
+      <li>Пустая клетка должна оказаться в правом нижнем углу</li>
+    </ul>
+    <div class="welcome-levels">
+      <div class="level-pill">Уровень 1 · Лёгкий</div>
+      <div class="level-pill">Уровень 2 · Средний</div>
+      <div class="level-pill">Уровень 3 · Сложный</div>
+    </div>
+    <button class="btn" style="margin-top:6px;" onclick="startGame()">Начать игру</button>
+    <div class="welcome-fotostrana">
+      Больше старых добрых игр на <a href="https://www.fotostrana.ru" target="_blank">www.fotostrana.ru</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== WIN POPUP ===== -->
+<div class="overlay" id="winOverlay">
+  <div class="win-box">
+    <div class="win-deco">✦ ✦ ✦</div>
+    <div class="win-title">ПОБЕДА!</div>
+    <div class="win-sub" id="winSub"></div>
+
+    <!-- РСЯ блок — замените на ваш код РСЯ -->
+    <div class="ad-block" id="adBlock">
+      <!-- Вставьте код блока РСЯ сюда -->
+      <span>Реклама</span>
+    </div>
+
+    <div class="win-btns">
+      <button class="btn" onclick="nextLevel()">Следующий&nbsp;уровень</button>
+      <button class="btn btn-sm" onclick="newGame()">Играть снова</button>
+    </div>
+    <div class="welcome-fotostrana" style="margin-top:14px;">
+      Больше старых добрых игр на <a href="https://www.fotostrana.ru" target="_blank">www.fotostrana.ru</a>
+    </div>
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
 <div class="title-wrap">
   <div class="title">Пятнашки</div>
   <div class="subtitle">игра-головоломка</div>
@@ -105,12 +223,8 @@
   <div class="stat"><div class="stat-label">Время</div><div class="stat-value" id="timer">0:00</div></div>
 </div>
 
-<div class="win-overlay" id="winOverlay">
-  <div class="win-deco">✦ ✦ ✦</div>
-  <div class="win-title">ПОБЕДА!</div>
-  <div class="win-sub" id="winSub"></div>
-  <div class="win-deco">✦ ✦ ✦</div>
-  <button class="btn" onclick="nextLevel()">Следующий<br>уровень</button>
+<div class="fotostrana-link">
+  Больше старых добрых игр на <a href="https://www.fotostrana.ru" target="_blank">www.fotostrana.ru</a>
 </div>
 
 <script>
@@ -136,44 +250,34 @@ const GOAL = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,0];
 let board = [...GOAL], moves = 0, seconds = 0, gameStarted = false, timerInterval = null;
 let level = 1;
 
-// Easy: shuffle by N random valid moves from solved state
 function shuffleEasy(n) {
-  let a = [...GOAL];
-  let prev = -1;
+  let a = [...GOAL], prev = -1;
   for (let i = 0; i < n; i++) {
     const ei = a.indexOf(0);
     const er = Math.floor(ei/4), ec = ei%4;
     const nb = [];
-    if (er > 0) nb.push(ei-4);
-    if (er < 3) nb.push(ei+4);
-    if (ec > 0) nb.push(ei-1);
-    if (ec < 3) nb.push(ei+1);
+    if (er>0) nb.push(ei-4); if (er<3) nb.push(ei+4);
+    if (ec>0) nb.push(ei-1); if (ec<3) nb.push(ei+1);
     const valid = nb.filter(x => x !== prev);
-    const pick = valid[Math.floor(Math.random() * valid.length)];
-    [a[ei], a[pick]] = [a[pick], a[ei]];
-    prev = ei;
+    const pick = valid[Math.floor(Math.random()*valid.length)];
+    [a[ei],a[pick]] = [a[pick],a[ei]]; prev = ei;
   }
   return a;
 }
 
 function isSolvable(a) {
-  let inv = 0;
-  const t = a.filter(x => x !== 0);
+  let inv = 0; const t = a.filter(x => x !== 0);
   for (let i = 0; i < t.length; i++)
     for (let j = i+1; j < t.length; j++)
       if (t[i] > t[j]) inv++;
-  const er = 4 - Math.floor(a.indexOf(0) / 4);
-  return er % 2 === 0 ? inv % 2 === 1 : inv % 2 === 0;
+  const er = 4 - Math.floor(a.indexOf(0)/4);
+  return er%2===0 ? inv%2===1 : inv%2===0;
 }
 
 function shuffleHard() {
   let a = [...GOAL];
-  do {
-    for (let i = a.length-1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i+1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-  } while (!isSolvable(a) || a.join() === GOAL.join());
+  do { for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} }
+  while (!isSolvable(a) || a.join()===GOAL.join());
   return a;
 }
 
@@ -182,11 +286,10 @@ function render() {
   el.innerHTML = '';
   board.forEach((num, idx) => {
     const tile = document.createElement('div');
-    tile.className = 'tile' + (num === 0 ? ' empty' : '');
+    tile.className = 'tile' + (num===0 ? ' empty' : '');
     if (num !== 0) {
       const img = document.createElement('img');
-      img.src = TILES[String(num)];
-      img.draggable = false;
+      img.src = TILES[String(num)]; img.draggable = false;
       tile.appendChild(img);
       tile.addEventListener('click', () => tryMove(idx));
     }
@@ -198,72 +301,76 @@ function tryMove(idx) {
   const ei = board.indexOf(0);
   const r = Math.floor(idx/4), c = idx%4;
   const er = Math.floor(ei/4), ec = ei%4;
-  if (!((Math.abs(r-er)===1 && c===ec) || (Math.abs(c-ec)===1 && r===er))) return;
-  if (!gameStarted) { gameStarted = true; startTimer(); }
-  [board[idx], board[ei]] = [board[ei], board[idx]];
-  moves++;
-  document.getElementById('moves').textContent = moves;
+  if (!((Math.abs(r-er)===1&&c===ec)||(Math.abs(c-ec)===1&&r===er))) return;
+  if (!gameStarted) { gameStarted=true; startTimer(); }
+  [board[idx],board[ei]] = [board[ei],board[idx]];
+  moves++; document.getElementById('moves').textContent = moves;
   render();
   const mel = document.querySelectorAll('.tile')[ei];
   mel.classList.remove('pop'); void mel.offsetWidth; mel.classList.add('pop');
-  if (board.join() === GOAL.join()) {
+  if (board.join()===GOAL.join()) {
     clearInterval(timerInterval);
-    setTimeout(() => {
-      document.getElementById('winSub').textContent = 'Ходов: ' + moves + ' · Время: ' + document.getElementById('timer').textContent;
-      document.getElementById('winOverlay').classList.add('show');
-    }, 400);
+    setTimeout(showWin, 400);
   }
 }
 
+function showWin() {
+  document.getElementById('winSub').textContent = 'Ходов: '+moves+' · Время: '+document.getElementById('timer').textContent;
+  // Обновить рекламный блок РСЯ
+  refreshAd();
+  document.getElementById('winOverlay').classList.add('show');
+}
+
+function refreshAd() {
+  // Здесь будет код обновления РСЯ блока
+  // Пример: ya_context_cb && ya_context_cb();
+  // Замените содержимое на ваш код инициализации РСЯ
+  const adBlock = document.getElementById('adBlock');
+  adBlock.innerHTML = '<span>Реклама</span>';
+  // Вставьте вызов РСЯ: например window.yaContextCb.push(() => { Ya.Context.AdvManager.render({...}) })
+}
+
 function startTimer() {
-  seconds = 0; clearInterval(timerInterval);
+  seconds=0; clearInterval(timerInterval);
   timerInterval = setInterval(() => {
     seconds++;
-    const m = Math.floor(seconds/60), s = seconds%60;
-    document.getElementById('timer').textContent = m + ':' + String(s).padStart(2,'0');
+    const m=Math.floor(seconds/60), s=seconds%60;
+    document.getElementById('timer').textContent = m+':'+String(s).padStart(2,'0');
   }, 1000);
 }
 
 function updateLevelBadge() {
-  const labels = ['', 'Уровень 1 · Лёгкий', 'Уровень 2 · Средний', 'Уровень 3 · Сложный'];
-  document.getElementById('levelBadge').textContent = labels[level] || ('Уровень ' + level);
+  const labels = {1:'Уровень 1 · Лёгкий', 2:'Уровень 2 · Средний', 3:'Уровень 3 · Сложный'};
+  document.getElementById('levelBadge').textContent = labels[level];
+}
+
+function startGame() {
+  document.getElementById('welcomeOverlay').classList.remove('show');
 }
 
 function newGame() {
   document.getElementById('winOverlay').classList.remove('show');
-  if (level === 1) board = shuffleEasy(7);
-  else if (level === 2) board = shuffleEasy(30);
-  else board = shuffleHard();
-  moves = 0; seconds = 0; gameStarted = false;
+  board = level===1 ? shuffleEasy(7) : level===2 ? shuffleEasy(30) : shuffleHard();
+  moves=0; seconds=0; gameStarted=false;
   clearInterval(timerInterval);
-  document.getElementById('moves').textContent = '0';
-  document.getElementById('timer').textContent = '0:00';
-  updateLevelBadge();
-  render();
+  document.getElementById('moves').textContent='0';
+  document.getElementById('timer').textContent='0:00';
+  updateLevelBadge(); render();
 }
 
-function toggleLevel() {
-  level = level >= 3 ? 1 : level + 1;
-  newGame();
-}
-
-function nextLevel() {
-  level = Math.min(level + 1, 3);
-  newGame();
-}
+function toggleLevel() { level = level>=3 ? 1 : level+1; newGame(); }
+function nextLevel() { level = Math.min(level+1, 3); newGame(); }
 
 document.addEventListener('keydown', e => {
-  const ei = board.indexOf(0);
-  const er = Math.floor(ei/4), ec = ei%4;
-  let t = -1;
-  if (e.key==='ArrowLeft'  && ec<3) t = ei+1;
-  if (e.key==='ArrowRight' && ec>0) t = ei-1;
-  if (e.key==='ArrowUp'    && er<3) t = ei+4;
-  if (e.key==='ArrowDown'  && er>0) t = ei-4;
-  if (t >= 0) { e.preventDefault(); tryMove(t); }
+  const ei=board.indexOf(0), er=Math.floor(ei/4), ec=ei%4; let t=-1;
+  if (e.key==='ArrowLeft'  && ec<3) t=ei+1;
+  if (e.key==='ArrowRight' && ec>0) t=ei-1;
+  if (e.key==='ArrowUp'    && er<3) t=ei+4;
+  if (e.key==='ArrowDown'  && er>0) t=ei-4;
+  if (t>=0) { e.preventDefault(); tryMove(t); }
 });
 
-newGame();
+render();
 </script>
 </body>
 </html>
