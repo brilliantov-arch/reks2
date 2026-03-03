@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>:: ЧАТ :: KROVATKA.APP ::</title>
+<title>:: ЧАТ :: KROVATKA.RU ::</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#000010;--panel:rgba(0,0,30,0.92);--border:#3a3a7a;--bright:#6060cc;--text:#c8c8ff;--link:#6699ff;--yellow:#ffff00;--input:#000028;--green:#00ff00;--font:'Courier New',monospace}
@@ -38,6 +38,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
 .spin{display:inline-block;width:12px;height:12px;border:2px solid #3333aa;border-top-color:#8888ff;border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle}
 @keyframes sp{to{transform:rotate(360deg)}}
 .big-spin{width:48px;height:48px;border:4px solid #3333aa;border-top-color:#8888ff;border-radius:50%;animation:sp .8s linear infinite;margin:16px auto}
+/* CHAT */
 #chat-s.on{display:flex;flex-direction:column;align-items:stretch}
 #chat-wrap{display:flex;flex:1;overflow:hidden}
 #main{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--border);min-width:0;background:rgba(0,0,15,.7)}
@@ -112,7 +113,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
 <!-- REG -->
 <div id="reg-s" class="screen on">
   <div class="panel">
-    <div class="ptitle">:: <span>ЧАТ</span> :: KROVATKA.APP ::</div>
+    <div class="ptitle">:: <span>ЧАТ</span> :: KROVATKA.RU ::</div>
     <p style="text-align:center;color:#6666aa;font-size:11px;margin-bottom:14px">Зарегистрируйтесь для входа в чат</p>
     <div class="fg"><label>ВАШ НИК:</label><input type="text" id="rn" placeholder="например: Котёнок_99" maxlength="20"></div>
     <div class="fg"><label>ВАША ПОЧТА:</label><input type="email" id="re" placeholder="example@mail.ru"></div>
@@ -124,7 +125,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
   </div>
 </div>
 
-<!-- WAIT FOR EMAIL CONFIRM -->
+<!-- WAIT -->
 <div id="wait-s" class="screen">
   <div class="panel" style="text-align:center">
     <div class="ptitle">:: <span>ПИСЬМО ОТПРАВЛЕНО</span> ::</div>
@@ -132,8 +133,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
     <p style="color:#aaaacc;margin-bottom:8px">Письмо отправлено на<br><strong id="sto" style="color:#ffff66;font-size:15px"></strong></p>
     <p style="color:#6666aa;font-size:11px;margin-bottom:16px">Проверьте почту и нажмите кнопку подтверждения в письме.</p>
     <div style="background:rgba(0,50,0,.2);border:1px solid #226622;padding:10px;font-size:11px;color:#66aa66">
-      ✉️ Отправитель: <strong style="color:#aaffaa">noreply@krovatka.app</strong><br>
-      Тема: <strong style="color:#aaffaa">Подтверждение регистрации на KROVATKA</strong>
+      ✉️ Тема письма:<br><strong style="color:#aaffaa">«Подтверждение регистрации на KROVATKA.RU»</strong>
     </div>
     <div id="wm" class="mi" style="margin-top:10px"></div>
     <hr class="hr">
@@ -188,12 +188,14 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:13
 
 <script>
 const RESEND_KEY = 're_dwwACizP_2ceyr68XasBBTyiwwj9RFjn1';
-const FROM_EMAIL = 'noreply@krovatka.app';
-const FROM_NAME  = 'KROVATKA';
+const FROM_EMAIL = 'onboarding@resend.dev';
+const FROM_NAME  = 'KROVATKA.RU';
 
+// ---- STATE ----
 var me=null, pendNick='', pendEmail='', confirmToken='';
 var actPriv=null, privChats={}, unread={}, ignored=new Set(), pubMsgs=[];
 
+// ---- BOTS ----
 var BOTS=[
   {nick:'Янтарная',cc:'c5',mood:'friendly'},{nick:'Дорс',cc:'c6',mood:'foodie'},
   {nick:'Женечка',cc:'c7',mood:'playful'},{nick:'Примат№1',cc:'c4',mood:'wise'},
@@ -219,9 +221,18 @@ var BOT_RESP={
   'плохо':['сочувствуем...','держись, всё наладится :)']
 };
 
-// STARS
-(function(){var sf=document.getElementById('stars');for(var i=0;i<160;i++){var s=document.createElement('div');s.className='star';var sz=Math.random()*2.5+0.5;s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:-'+(Math.random()*5).toFixed(1)+'s';sf.appendChild(s);}})();
+// ---- STARS ----
+(function(){
+  var sf=document.getElementById('stars');
+  for(var i=0;i<160;i++){
+    var s=document.createElement('div'); s.className='star';
+    var sz=Math.random()*2.5+0.5;
+    s.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;--d:'+(Math.random()*4+2).toFixed(1)+'s;--dl:-'+(Math.random()*5).toFixed(1)+'s';
+    sf.appendChild(s);
+  }
+})();
 
+// ---- UTILS ----
 function pad(n){return String(n).padStart(2,'0');}
 function ts(){var d=new Date();return '['+pad(d.getHours())+':'+pad(d.getMinutes())+']';}
 function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -230,51 +241,83 @@ function rnd(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function showNotif(msg){var n=document.getElementById('notif');n.textContent=msg;n.style.display='block';setTimeout(function(){n.style.display='none';},4000);}
 function showScreen(id){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('on');});document.getElementById(id).classList.add('on');}
 function genToken(){return Math.random().toString(36).substr(2,16)+Date.now().toString(36);}
-function tick(){var d=new Date();document.getElementById('tc').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
-setInterval(tick,1000);tick();
 
-// EMAIL via RESEND
+// ---- CLOCK ----
+function tick(){var d=new Date();document.getElementById('tc').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());}
+setInterval(tick,1000); tick();
+
+// ---- SEND EMAIL via RESEND ----
 async function sendConfirmEmail(nick, email, token) {
+  // Build confirm URL — works both locally and hosted
   const base = window.location.href.split('?')[0];
   const confirmUrl = base + '?token=' + token + '&nick=' + encodeURIComponent(nick) + '&email=' + encodeURIComponent(email);
 
-  const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
+  const html = `
+<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:0;background:#000010;font-family:'Courier New',monospace;color:#c8c8ff">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#000010;padding:30px 0">
-<tr><td align="center">
-<table width="520" cellpadding="0" cellspacing="0" style="background:rgba(0,0,30,0.95);border:1px solid #6060cc;box-shadow:0 0 30px rgba(100,100,255,0.3)">
-<tr><td style="background:linear-gradient(#1a1a4a,#0a0a2a);border-bottom:2px solid #6060cc;padding:18px 24px;text-align:center">
-  <div style="color:#ffff00;font-size:26px;font-weight:bold;letter-spacing:3px">::HIT::.RU::</div>
-  <div style="color:#8888ff;font-size:12px;margin-top:5px;letter-spacing:4px">:: KROVATKA.APP ::</div>
-</td></tr>
-<tr><td style="background:#000018;padding:5px 24px;font-size:11px;color:#333366;letter-spacing:3px;text-align:center">✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦</td></tr>
-<tr><td style="padding:30px 34px">
-  <p style="color:#9999cc;font-size:11px;margin:0 0 6px;letter-spacing:2px">ДОБРО ПОЖАЛОВАТЬ,</p>
-  <p style="color:#ffff66;font-size:24px;font-weight:bold;margin:0 0 22px;letter-spacing:1px">${esc(nick)}</p>
-  <p style="color:#c8c8ff;font-size:13px;line-height:1.8;margin:0 0 24px">
-    Вы зарегистрировались на чате <strong style="color:#8888ff">KROVATKA.APP</strong> — уютный уголок рунета возвращается!<br><br>
-    Для завершения регистрации нажмите кнопку:
-  </p>
-  <table cellpadding="0" cellspacing="0" style="margin:0 0 24px">
-    <tr><td style="background:linear-gradient(#226622,#114411);border:2px solid #44aa44">
-      <a href="${confirmUrl}" style="display:block;padding:13px 36px;color:#aaffaa;text-decoration:none;font-family:'Courier New',monospace;font-size:15px;font-weight:bold;letter-spacing:1px">
-        ✅ ПОДТВЕРДИТЬ РЕГИСТРАЦИЮ
-      </a>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#000010;padding:30px 0">
+    <tr><td align="center">
+      <table width="520" cellpadding="0" cellspacing="0" style="background:rgba(0,0,30,0.95);border:1px solid #6060cc;box-shadow:0 0 30px rgba(100,100,255,0.4)">
+        <!-- HEADER -->
+        <tr>
+          <td style="background:linear-gradient(#1a1a4a,#0a0a2a);border-bottom:2px solid #6060cc;padding:16px 24px;text-align:center">
+            <div style="color:#ffff00;font-size:24px;font-weight:bold;letter-spacing:2px">::HIT::.RU::</div>
+            <div style="color:#8888ff;font-size:13px;margin-top:4px;letter-spacing:3px">:: KROVATKA.RU ::</div>
+          </td>
+        </tr>
+        <!-- STARS ROW -->
+        <tr>
+          <td style="background:#000018;padding:6px 24px;font-size:11px;color:#444488;letter-spacing:2px;text-align:center">
+            ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦ &nbsp; ✦
+          </td>
+        </tr>
+        <!-- BODY -->
+        <tr>
+          <td style="padding:28px 32px">
+            <p style="color:#9999cc;font-size:12px;margin:0 0 8px 0;letter-spacing:1px">ДОБРО ПОЖАЛОВАТЬ,</p>
+            <p style="color:#ffff66;font-size:22px;font-weight:bold;margin:0 0 20px 0;letter-spacing:1px">${esc(nick)}</p>
+
+            <p style="color:#c8c8ff;font-size:13px;line-height:1.7;margin:0 0 20px 0">
+              Вы зарегистрировались на чате <strong style="color:#8888ff">KROVATKA.RU</strong> — одном из самых уютных уголков рунета!<br><br>
+              Для подтверждения регистрации нажмите кнопку ниже:
+            </p>
+
+            <table cellpadding="0" cellspacing="0" style="margin:24px 0">
+              <tr>
+                <td style="background:linear-gradient(#226622,#114411);border:1px solid #44aa44;padding:0">
+                  <a href="${confirmUrl}" style="display:block;padding:12px 32px;color:#aaffaa;text-decoration:none;font-family:'Courier New',monospace;font-size:14px;font-weight:bold;letter-spacing:1px">
+                    ✅ ПОДТВЕРДИТЬ РЕГИСТРАЦИЮ
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="color:#666688;font-size:11px;margin:16px 0 0 0;line-height:1.6">
+              Или скопируйте ссылку в браузер:<br>
+              <span style="color:#6699ff;word-break:break-all">${confirmUrl}</span>
+            </p>
+
+            <hr style="border:none;border-top:1px solid #3a3a7a;margin:24px 0">
+
+            <p style="color:#555577;font-size:11px;margin:0">
+              Если вы не регистрировались на KROVATKA.RU — просто проигнорируйте это письмо.
+            </p>
+          </td>
+        </tr>
+        <!-- FOOTER -->
+        <tr>
+          <td style="background:linear-gradient(#0a0a2a,#050514);border-top:1px solid #3a3a7a;padding:12px 24px;text-align:center">
+            <div style="color:#444477;font-size:10px;letter-spacing:1px">:: KROVATKA.RU :: ЧАТ ДЛЯ НОРМАЛЬНЫХ ЛЮДЕЙ ::</div>
+            <div style="color:#333355;font-size:10px;margin-top:4px">✦ &nbsp; ✦ &nbsp; ✦</div>
+          </td>
+        </tr>
+      </table>
     </td></tr>
   </table>
-  <p style="color:#555577;font-size:11px;line-height:1.7;margin:0">
-    Если кнопка не работает, скопируйте ссылку в браузер:<br>
-    <span style="color:#6699ff;word-break:break-all;font-size:10px">${confirmUrl}</span>
-  </p>
-  <hr style="border:none;border-top:1px solid #2a2a5a;margin:22px 0">
-  <p style="color:#444466;font-size:11px;margin:0">Если вы не регистрировались — просто проигнорируйте это письмо.</p>
-</td></tr>
-<tr><td style="background:linear-gradient(#0a0a2a,#050514);border-top:1px solid #2a2a5a;padding:12px 24px;text-align:center">
-  <div style="color:#333366;font-size:10px;letter-spacing:2px">:: KROVATKA.APP :: ЧАТ ДЛЯ НОРМАЛЬНЫХ ЛЮДЕЙ ::</div>
-  <div style="color:#222244;font-size:11px;margin-top:4px">✦ ✦ ✦</div>
-</td></tr>
-</table></td></tr></table>
-</body></html>`;
+</body>
+</html>`;
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -285,20 +328,26 @@ async function sendConfirmEmail(nick, email, token) {
     body: JSON.stringify({
       from: FROM_NAME + ' <' + FROM_EMAIL + '>',
       to: [email],
-      subject: '🛏️ Подтверждение регистрации на KROVATKA.APP',
+      subject: '🛏️ Подтверждение регистрации на KROVATKA.RU',
       html: html
     })
   });
 
   const data = await res.json();
-  if (!res.ok) throw new Error(data.message || data.name || 'Ошибка отправки');
+  console.log('Resend response:', data);
+
+  if (!res.ok) {
+    throw new Error(data.message || data.name || 'Ошибка отправки письма');
+  }
   return data;
 }
 
-// CHECK CONFIRM TOKEN IN URL
+// ---- CHECK URL TOKEN (confirm link) ----
 function checkConfirmToken() {
   const p = new URLSearchParams(window.location.search);
-  const token = p.get('token'), nick = p.get('nick'), email = p.get('email');
+  const token = p.get('token');
+  const nick  = p.get('nick');
+  const email = p.get('email');
   if (token && nick && email) {
     window.history.replaceState({}, '', window.location.pathname);
     me = { nick: decodeURIComponent(nick), email: decodeURIComponent(email), cc: nc(nick) };
@@ -309,36 +358,46 @@ function checkConfirmToken() {
   return false;
 }
 
-// REGISTRATION
+// ---- REGISTRATION ----
 async function doReg() {
-  var nick=document.getElementById('rn').value.trim();
-  var email=document.getElementById('re').value.trim();
-  var rm=document.getElementById('rm');
-  if(!nick||nick.length<2){rm.className='me';rm.textContent='Ник должен быть не менее 2 символов';return;}
-  if(!/^[a-zA-Zа-яА-ЯёЁ0-9_\-\.№]+$/.test(nick)){rm.className='me';rm.textContent='Ник: только буквы, цифры, _ - .';return;}
-  if(!email||!/^[^@]+@[^@]+\.[^@]+$/.test(email)){rm.className='me';rm.textContent='Введите корректный email';return;}
-  pendNick=nick; pendEmail=email; confirmToken=genToken();
-  rm.className='mi'; rm.innerHTML='<span class="spin"></span> Отправляем письмо на '+esc(email)+'...';
-  document.getElementById('rbtn').disabled=true;
+  var nick  = document.getElementById('rn').value.trim();
+  var email = document.getElementById('re').value.trim();
+  var rm    = document.getElementById('rm');
+
+  if (!nick || nick.length < 2)
+    { rm.className='me'; rm.textContent='Ник должен быть не менее 2 символов'; return; }
+  if (!/^[a-zA-Zа-яА-ЯёЁ0-9_\-\.№]+$/.test(nick))
+    { rm.className='me'; rm.textContent='Ник: только буквы, цифры, _ - .'; return; }
+  if (!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email))
+    { rm.className='me'; rm.textContent='Введите корректный email'; return; }
+
+  pendNick = nick; pendEmail = email;
+  confirmToken = genToken();
+
+  rm.className='mi';
+  rm.innerHTML='<span class="spin"></span> Отправляем письмо на ' + esc(email) + '...';
+  document.getElementById('rbtn').disabled = true;
+
   try {
     await sendConfirmEmail(nick, email, confirmToken);
-    document.getElementById('sto').textContent=email;
+    document.getElementById('sto').textContent = email;
     showScreen('wait-s');
   } catch(e) {
-    rm.className='me'; rm.textContent='❌ '+e.message;
+    rm.className = 'me';
+    rm.textContent = '❌ ' + e.message;
   }
-  document.getElementById('rbtn').disabled=false;
+  document.getElementById('rbtn').disabled = false;
 }
 
 async function resendEmail() {
-  var wm=document.getElementById('wm');
+  var wm = document.getElementById('wm');
   wm.className='mi'; wm.innerHTML='<span class="spin"></span> Повторная отправка...';
-  confirmToken=genToken();
+  confirmToken = genToken();
   try {
     await sendConfirmEmail(pendNick, pendEmail, confirmToken);
     wm.className='ms'; wm.textContent='✓ Письмо отправлено повторно!';
   } catch(e) {
-    wm.className='me'; wm.textContent='❌ '+e.message;
+    wm.className='me'; wm.textContent='❌ ' + e.message;
   }
 }
 
@@ -356,6 +415,7 @@ function logout(){
   showScreen('reg-s');
 }
 
+// ---- INIT CHAT ----
 function initChat(){
   renderUserList();
   var init=[
@@ -373,19 +433,21 @@ function initChat(){
   startBots();
 }
 
+// ---- MESSAGES ----
 function addPubMsg(nick,cc,text,cls,isBot){
   if(ignored.has(nick))return;
   var d=document.createElement('div');
   d.className='msg'+(cls?' '+cls:'');
-  d.innerHTML='<span class="ts">'+ts()+'</span><a class="nk '+cc+'" href="#">'+esc(nick)+'</a><span class="cl">:</span><span class="tx">'+esc(text)+'</span>';
-  d.querySelector('.nk').addEventListener('click',function(e){e.preventDefault();openPrivWith(nick);});
+  d.innerHTML='<span class="ts">'+ts()+'</span><a class="nk '+cc+'" href="#" data-nick="'+esc(nick)+'">'+esc(nick)+'</a><span class="cl">:</span><span class="tx">'+esc(text)+'</span>';
+  d.querySelector('.nk').addEventListener('click',function(e){e.preventDefault();openPrivWith(this.getAttribute('data-nick'));});
   pubMsgs.push(d);
   if(!actPriv){var ms=document.getElementById('msgs');ms.appendChild(d);ms.scrollTop=ms.scrollHeight;}
   if(!isBot&&!actPriv)botReact(text);
 }
 function addBotMsg(bot,text){addPubMsg(bot.nick,bot.cc,text,'bot',true);}
 function sysMsg(text,cls){
-  var d=document.createElement('div');d.className='msg '+(cls||'sys');
+  var d=document.createElement('div');
+  d.className='msg '+(cls||'sys');
   d.innerHTML='<span class="tx" style="color:'+(cls==='jn'?'#008888':'#888800')+'">'+esc(text)+'</span>';
   pubMsgs.push(d);
   if(!actPriv){var ms=document.getElementById('msgs');ms.appendChild(d);ms.scrollTop=ms.scrollHeight;}
@@ -393,7 +455,7 @@ function sysMsg(text,cls){
 function addPrivMsg(fromNick,toNick,text,isMine){
   var key=isMine?toNick:fromNick;
   if(!privChats[key])privChats[key]=[];
-  var m={fromNick:fromNick,toNick:toNick,text:text,isMine:isMine,ts_:ts(),nick:isMine?me.nick:fromNick,cc:isMine?me.cc:nc(fromNick)};
+  var m={fromNick:fromNick,toNick:toNick,text:text,isMine:isMine,ts_:ts()};
   privChats[key].push(m);
   if(actPriv===key)renderPrivMsg(m);
   else{unread[key]=(unread[key]||0)+1;updateTabs();showNotif('📨 Приват от '+fromNick+': '+text.substring(0,28)+'...');}
@@ -401,10 +463,20 @@ function addPrivMsg(fromNick,toNick,text,isMine){
 function renderPrivMsg(m){
   var ms=document.getElementById('msgs'),d=document.createElement('div');
   d.className='msg '+(m.isMine?'pout':'pin');
-  d.innerHTML='<span class="ts">'+m.ts_+'</span><span class="nk '+m.cc+'">'+(m.isMine?'→ '+esc(m.toNick):esc(m.nick))+'</span><span class="cl">:</span><span class="tx">'+esc(m.text)+'</span>';
+  var senderCC=m.isMine?me.cc:nc(m.fromNick);
+  var nickHtml;
+  if(m.isMine){
+    nickHtml='<span class="'+senderCC+'">'+esc(m.fromNick)+'</span>'
+            +'<span style="color:#555588;font-weight:normal"> → </span>'
+            +'<span style="color:#cc88ff">'+esc(m.toNick)+'</span>';
+  } else {
+    nickHtml='<span class="'+senderCC+'">'+esc(m.fromNick)+'</span>';
+  }
+  d.innerHTML='<span class="ts">'+m.ts_+'</span><span class="nk">'+nickHtml+'</span><span class="cl">:</span><span class="tx">'+esc(m.text)+'</span>';
   ms.appendChild(d);ms.scrollTop=ms.scrollHeight;
 }
 
+// ---- PRIVATE ----
 function openPrivWith(nick){
   if(!nick||!me||nick===me.nick)return;
   if(!privChats[nick])privChats[nick]=[];
@@ -428,7 +500,7 @@ function closePriv(){
   pubMsgs.forEach(function(d){
     var c=d.cloneNode(true);
     var nk=c.querySelector('.nk');
-    if(nk){(function(n){nk.addEventListener('click',function(e){e.preventDefault();openPrivWith(n);});})(nk.textContent);}
+    if(nk){(function(n){nk.addEventListener('click',function(e){e.preventDefault();openPrivWith(n);});})(nk.getAttribute('data-nick')||nk.textContent);}
     ms.appendChild(c);
   });
   ms.scrollTop=ms.scrollHeight;updateTabs();
@@ -456,6 +528,7 @@ function updateTabs(){
   });
 }
 
+// ---- SEND ----
 function send(){
   var inp=document.getElementById('mi2'),text=inp.value.trim();
   if(!text)return;inp.value='';
@@ -466,6 +539,7 @@ function send(){
   }else addPubMsg(me.nick,me.cc,text,'',false);
 }
 
+// ---- BOT LOGIC ----
 function botReact(text){
   var lower=text.toLowerCase();
   for(var trig in BOT_RESP){
@@ -495,6 +569,7 @@ function startBots(){
   });
 }
 
+// ---- USER LIST ----
 function renderUserList(){
   if(!me)return;
   var list=document.getElementById('ulist');list.innerHTML='';
@@ -512,6 +587,7 @@ function renderUserList(){
   });
 }
 
+// ---- SETTINGS ----
 function openSettings(){
   document.getElementById('mc').innerHTML='<div class="mt">:: Настройки ::</div><div class="fg"><label>Размер шрифта:</label><select style="width:100%;background:#000028;border:1px solid #3a3a7a;color:#ccccff;padding:4px;font-family:monospace"><option>Маленький</option><option selected>Средний</option><option>Большой</option></select></div><div class="fg" style="display:flex;gap:8px;align-items:center"><input type="checkbox" checked><label style="margin:0;cursor:pointer">Уведомления о приватах</label></div><button class="btn btn-g" onclick="closeModal()" style="width:100%;margin-top:8px">Сохранить</button>';
   document.getElementById('ov').classList.add('on');
@@ -528,6 +604,7 @@ document.getElementById('ov').addEventListener('click',function(e){if(e.target==
 document.getElementById('rn').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('re').focus();});
 document.getElementById('re').addEventListener('keydown',function(e){if(e.key==='Enter')doReg();});
 
+// ---- INIT ----
 checkConfirmToken();
 </script>
 </body>
